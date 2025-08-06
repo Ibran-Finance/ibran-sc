@@ -13,44 +13,131 @@ import {ITokenSwap} from "./interfaces/ITokenSwap.sol";
 import {IIbranBridgeTokenSender} from "./interfaces/IIbranBridgeTokenSender.sol";
 import {IHelperTestnet} from "./interfaces/IHelperTestnet.sol";
 
+/*
+██╗██████╗░██████╗░░█████╗░███╗░░██╗
+██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
+██║██████╦╝██████╔╝███████║██╔██╗██║
+██║██╔══██╗██╔══██╗██╔══██║██║╚████║
+██║██████╦╝██║░░██║██║░░██║██║░╚███║
+╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
+*/
+
+/**
+ * @title LendingPool
+ * @author Ibran Protocol
+ * @notice A comprehensive lending pool contract that manages liquidity, borrowing, and cross-chain operations
+ * @dev This contract implements a complete lending protocol with the following features:
+ * - Liquidity supply and withdrawal with share-based accounting
+ * - Collateral management with position-based architecture
+ * - Cross-chain borrowing with bridge integration
+ * - Interest accrual and health checks
+ * - Token swapping within positions
+ * 
+ * The contract uses a share-based system where users receive shares proportional
+ * to their deposits, and interest is distributed based on share ownership.
+ * 
+ * @custom:security This contract includes reentrancy protection and comprehensive
+ * access controls to ensure secure lending operations.
+ */
 contract LendingPool is ReentrancyGuard {
     using SafeERC20 for IERC20;
 
+    // ============ ERRORS ============
+    /// @notice Error thrown when there is insufficient collateral for an operation
     error InsufficientCollateral();
+    /// @notice Error thrown when there is insufficient liquidity in the pool
     error InsufficientLiquidity();
+    /// @notice Error thrown when user has insufficient shares for an operation
     error InsufficientShares();
+    /// @notice Error thrown when the loan-to-value ratio exceeds the maximum allowed
     error LTVExceedMaxAmount();
+    /// @notice Error thrown when trying to create a position that already exists
     error PositionAlreadyCreated();
+    /// @notice Error thrown when a token is not available for an operation
     error TokenNotAvailable();
+    /// @notice Error thrown when an amount is zero
     error ZeroAmount();
+    /// @notice Error thrown when user has insufficient borrow shares
     error InsufficientBorrowShares();
+    /// @notice Error thrown when the amount of shares is invalid
     error amountSharesInvalid();
 
+    // ============ EVENTS ============
+    /// @notice Emitted when liquidity is supplied to the pool
+    /// @param user The address of the user supplying liquidity
+    /// @param amount The amount of tokens supplied
+    /// @param shares The number of shares received
     event SupplyLiquidity(address user, uint256 amount, uint256 shares);
+
+    /// @notice Emitted when liquidity is withdrawn from the pool
+    /// @param user The address of the user withdrawing liquidity
+    /// @param amount The amount of tokens withdrawn
+    /// @param shares The number of shares redeemed
     event WithdrawLiquidity(address user, uint256 amount, uint256 shares);
+
+    /// @notice Emitted when collateral is supplied to a position
+    /// @param user The address of the user supplying collateral
+    /// @param amount The amount of collateral supplied
     event SupplyCollateral(address user, uint256 amount);
+
+    /// @notice Emitted when debt is repaid using collateral from position
+    /// @param user The address of the user repaying debt
+    /// @param amount The amount repaid
+    /// @param shares The number of shares burned
     event RepayWithCollateralByPosition(address user, uint256 amount, uint256 shares);
+
+    /// @notice Emitted when a new position is created
+    /// @param user The address of the user creating the position
+    /// @param positionAddress The address of the created position contract
     event CreatePosition(address user, address positionAddress);
+
+    /// @notice Emitted when debt is borrowed with cross-chain functionality
+    /// @param user The address of the user borrowing
+    /// @param amount The amount borrowed
+    /// @param shares The number of shares minted
+    /// @param chainId The destination chain ID
+    /// @param bridgeTokenSender The bridge token sender address
     event BorrowDebtCrosschain(
         address user, uint256 amount, uint256 shares, uint256 chainId, uint256 bridgeTokenSender
     );
 
+    // ============ STATE VARIABLES ============
+    /// @notice Total amount of assets supplied to the pool
     uint256 public totalSupplyAssets;
+    /// @notice Total number of supply shares in circulation
     uint256 public totalSupplyShares;
+    /// @notice Total amount of assets borrowed from the pool
     uint256 public totalBorrowAssets;
+    /// @notice Total number of borrow shares in circulation
     uint256 public totalBorrowShares;
 
+    /// @notice Mapping from user address to their supply shares
     mapping(address => uint256) public userSupplyShares;
+    /// @notice Mapping from user address to their borrow shares
     mapping(address => uint256) public userBorrowShares;
+    /// @notice Mapping from user address to their position contract address
     mapping(address => address) public addressPositions;
 
+    /// @notice The address of the collateral token
     address public collateralToken;
+    /// @notice The address of the borrow token
     address public borrowToken;
+    /// @notice The address of the factory contract
     address public factory;
 
+    /// @notice Timestamp of the last interest accrual
     uint256 public lastAccrued;
+    /// @notice The loan-to-value ratio for the pool (in basis points)
     uint256 public ltv;
 
+    /**
+     * @notice Constructor to initialize the lending pool
+     * @param _collateralToken The address of the collateral token
+     * @param _borrowToken The address of the borrow token
+     * @param _factory The address of the factory contract
+     * @param _ltv The loan-to-value ratio (in basis points)
+     * @dev Sets up the initial pool configuration with tokens and LTV ratio
+     */
     constructor(address _collateralToken, address _borrowToken, address _factory, uint256 _ltv) {
         collateralToken = _collateralToken;
         borrowToken = _borrowToken;
@@ -58,11 +145,19 @@ contract LendingPool is ReentrancyGuard {
         ltv = _ltv;
     }
 
+    /**
+     * @notice Modifier to ensure user has a position before certain operations
+     * @dev Automatically creates a position if one doesn't exist
+     */
     modifier positionRequired() {
         _positionRequired();
         _;
     }
 
+    /**
+     * @notice Internal function to check and create position if needed
+     * @dev Creates a new position contract if the user doesn't have one
+     */
     function _positionRequired() internal {
         if (addressPositions[msg.sender] == address(0)) {
             createPosition();
@@ -207,6 +302,7 @@ contract LendingPool is ReentrancyGuard {
      * @dev Calculates shares, checks liquidity, and handles cross-chain or local transfers. Accrues interest before borrowing.
      * @param amount The amount of tokens to borrow.
      * @param _chainId The chain id of the destination network.
+     * @param _bridgeTokenSender The bridge token sender index
      * @custom:throws InsufficientLiquidity if protocol lacks liquidity.
      * @custom:emits BorrowDebtCrosschain when borrow is successful.
      */

@@ -1,37 +1,96 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+/*
+██╗██████╗░██████╗░░█████╗░███╗░░██╗
+██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
+██║██████╦╝██████╔╝███████║██╔██╗██║
+██║██╔══██╗██╔══██╗██╔══██║██║╚████║
+██║██████╦╝██║░░██║██║░░██║██║░╚███║
+╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
+*/
+
+/**
+ * @title HelperTestnet
+ * @author Ibran Protocol
+ * @notice A helper contract for managing cross-chain configurations and bridge information
+ * @dev This contract serves as a central registry for cross-chain configurations
+ * including mailbox addresses, gas paymasters, and domain IDs for various testnet chains.
+ * 
+ * The contract provides functionality to:
+ * - Store and retrieve chain-specific information (mailbox, gas paymaster, domain ID)
+ * - Manage receiver bridge addresses for different chains
+ * - Add new chain configurations dynamically
+ * 
+ * This contract is specifically designed for testnet environments and contains
+ * pre-configured settings for multiple testnet chains.
+ * 
+ * @custom:security This contract should only be used in testnet environments.
+ * For production, use a more secure and audited chain registry solution.
+ */
 contract HelperTestnet {
+    // ============ ERRORS ============
+    /// @notice Error thrown when the caller is not the owner
     error NotOwner();
+    /// @notice Error thrown when trying to add a chain that already exists
     error ChainAlreadyExists();
+    /// @notice Error thrown when trying to add a token that already exists
     error TokenAlreadyExists();
+    /// @notice Error thrown when trying to access a token that doesn't exist
     error TokenNotExists();
 
+    // ============ STRUCTS ============
+    /**
+     * @notice Structure containing chain-specific information
+     * @param mailbox The address of the mailbox contract on the chain
+     * @param gasMaster The address of the gas paymaster contract on the chain
+     * @param domainId The domain ID for the chain
+     */
     struct ChainInfo {
         address mailbox;
         address gasMaster;
         uint32 domainId;
     }
 
+    // ============ STATE VARIABLES ============
+    /// @notice Mapping from chain ID to chain information
     mapping(uint256 => ChainInfo) public chains;
+    /// @notice Mapping from chain ID to receiver bridge address
     mapping(uint256 => address) public receiverBridge;
 
+    /// @notice The owner of the contract
     address public owner;
 
+    /// @notice The current chain ID
     uint256 public chainId;
 
+    /**
+     * @notice Modifier to restrict function access to the owner only
+     * @dev Reverts with NotOwner error if the caller is not the owner
+     */
     modifier onlyOwner() {
         _onlyOwner();
         _;
     }
 
+    /**
+     * @notice Internal function to check if the caller is the owner
+     * @dev Reverts with NotOwner error if the caller is not the owner
+     */
     function _onlyOwner() internal view {
         if (msg.sender != owner) revert NotOwner();
     }
 
+    /**
+     * @notice Constructor to initialize the helper contract
+     * @dev Sets the owner to msg.sender and initializes the current chain ID
+     * @dev Pre-configures chain information for various testnet chains
+     */
     constructor() {
         owner = msg.sender;
         chainId = block.chainid;
+        
+        // Pre-configured chain information for various testnets
         // ABSTRACT
         chains[11124] =
             ChainInfo(0x28f448885bEaaF662f8A9A6c9aF20fAd17A5a1DC, 0xbAaE1B4e953190b05C757F69B2F6C46b9548fa4f, 11124);
@@ -98,11 +157,7 @@ contract HelperTestnet {
 
         // MEGAETH
         chains[6342] =
-            ChainInfo(0xF78deCe5Cf97e1bd61C202A5ba1af33b87454878, 0x638A831b4d11Be6a72AcB97d1aE79DA05Ae9B1D3, 6342);
-
-        // MODE
-        chains[919] =
-            ChainInfo(0x589C201a07c26b4725A4A829d772f24423da480B, 0xB261C52241E133f957630AeeFEd48a82963AC33e, 919);
+            ChainInfo(0xF78deCe5Cf97e1bd61C202A5ba1af33b87454878, 0x638A831b4d11Be6a72ACB97d1aE79DA05Ae9B1D3, 6342);
 
         // MONAD
         chains[10143] =
@@ -112,33 +167,13 @@ contract HelperTestnet {
         chains[267] =
             ChainInfo(0x589C201a07c26b4725A4A829d772f24423da480B, 0xFb55597F07417b08195Ba674f4dd58aeC9B89FBB, 267);
 
-        // ODYSSEY
-        chains[911867] =
-            ChainInfo(0xDDcFEcF17586D08A5740B7D91735fcCE3dfe3eeD, 0xD356C996277eFb7f75Ee8bd61b31cC781A12F54f, 911867);
-
-        // OPTIMISM_SEPOLIA
-        chains[11155420] =
-            ChainInfo(0x6966b0E55883d49BFB24539356a2f8A673E02039, 0x28B02B97a850872C4D33C3E024fab6499ad96564, 11155420);
-
         // PLUME
         chains[98867] =
             ChainInfo(0xDDcFEcF17586D08A5740B7D91735fcCE3dfe3eeD, 0xD5B70f7Da85F98A5197E55114A38f3eDcDCf020e, 98867);
 
-        // POLYGON_AMOY
-        chains[80002] =
-            ChainInfo(0x54148470292C24345fb828B003461a9444414517, 0x6c13643B3927C57DB92c790E4E3E7Ee81e13f78C, 80002);
-
         // ROME
         chains[200018] =
             ChainInfo(0x0b9A4A46f50f91f353B8Aa0F3Ca80E35E253bDd8, 0xe65785c058559bA6D133d1ba1Becac0CBc8aE248, 200018);
-
-        // SCROLL_SEPOLIA
-        chains[534351] =
-            ChainInfo(0x3C5154a193D6e2955650f9305c8d80c18C814A68, 0x86fb9F1c124fB20ff130C41a79a432F770f67AFD, 534351);
-
-        // SEPOLIA
-        chains[11155111] =
-            ChainInfo(0xfFAEF09B3cd11D9b20d1a19bECca54EEC2884766, 0x6f2756380FD49228ae25Aa7F2817993cB74Ecc56, 11155111);
 
         // SOMNIA
         chains[50312] =
@@ -156,10 +191,6 @@ contract HelperTestnet {
         chains[64165] =
             ChainInfo(0xDDcFEcF17586D08A5740B7D91735fcCE3dfe3eeD, 0xa3AB7E6cE24E6293bD5320A53329Ef2f4DE73fCA, 64165);
 
-        // SUAVE_TOLIMAN
-        chains[33626250] =
-            ChainInfo(0xDDcFEcF17586D08A5740B7D91735fcCE3dfe3eeD, 0xA2cf52064c921C11adCd83588CbEa08cc3bfF5d8, 33626250);
-
         // SUBTENSOR
         chains[945] =
             ChainInfo(0x589C201a07c26b4725A4A829d772f24423da480B, 0xB589407cf6bEA5CD81AD0946b9F1467933ede74c, 945);
@@ -168,20 +199,36 @@ contract HelperTestnet {
         chains[98985] =
             ChainInfo(0x6966b0E55883d49BFB24539356a2f8A673E02039, 0xeC7eb4196Bd601DEa7585A744FbFB4CF11278450, 98985);
 
-        // UNICHAIN
-        chains[1301] =
-            ChainInfo(0xDDcFEcF17586D08A5740B7D91735fcCE3dfe3eeD, 0xa3AB7E6cE24E6293bD5320A53329Ef2f4DE73fCA, 1301);
-
         // LOAD
         chains[9496] =
             ChainInfo(0x589C201a07c26b4725A4A829d772f24423da480B, 0x8584590ad637C61C7cDF72eFF3381Ee1c3D1bC8E, 9496);
     }
 
+    /**
+     * @notice Adds a new chain configuration
+     * @param _mailbox The address of the mailbox contract on the chain
+     * @param _gasMaster The address of the gas paymaster contract on the chain
+     * @param _domainId The domain ID for the chain
+     * @param _chainId The chain ID to add the configuration for
+     * @dev Only the owner can call this function
+     * @dev Reverts if the chain already exists
+     * 
+     * @custom:error NotOwner - If the caller is not the owner
+     * @custom:error ChainAlreadyExists - If the chain ID already has a configuration
+     */
     function addChain(address _mailbox, address _gasMaster, uint32 _domainId, uint256 _chainId) public onlyOwner {
         if (chains[_chainId].mailbox != address(0)) revert ChainAlreadyExists();
         chains[_chainId] = ChainInfo(_mailbox, _gasMaster, _domainId);
     }
 
+    /**
+     * @notice Adds a receiver bridge address for a specific chain
+     * @param _chainId The chain ID to add the receiver bridge for
+     * @param _receiverBridge The address of the receiver bridge contract
+     * @dev Only the owner can call this function
+     * 
+     * @custom:error NotOwner - If the caller is not the owner
+     */
     function addReceiverBridge(uint256 _chainId, address _receiverBridge) public onlyOwner {
         receiverBridge[_chainId] = _receiverBridge;
     }

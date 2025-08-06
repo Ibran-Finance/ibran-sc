@@ -1,13 +1,29 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
+/*
+██╗██████╗░██████╗░░█████╗░███╗░░██╗
+██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
+██║██████╦╝██████╔╝███████║██╔██╗██║
+██║██╔══██╗██╔══██╗██╔══██║██║╚████║
+██║██████╦╝██║░░██║██║░░██║██║░╚███║
+╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
+*/
+
+/**
+ * @title ITokenSwap
+ * @dev Interface for token swap functionality
+ * @notice Defines the interface for swapping tokens between different types
+ * @author IBRAN Team
+ */
 interface ITokenSwap {
-    function mint(address _to, uint256 _amount) external;
-    function burn(uint256 _amount) external;
-    function grantMintAndBurnRoles(address _to) external;
-    function mintMock(address _to, uint256 _amount) external;
-    function burnMock(uint256 _amount) external;
-    function bridgeTokenSenders(uint256 _chainId, uint256 _index) external view returns (address);
-    function addBridgeTokenSender(address _bridgeTokenSender) external;
-    function getBridgeTokenSendersLength(uint256 _chainId) external view returns (uint256);
+    /**
+     * @notice Swaps tokens from one type to another
+     * @dev Executes a token swap operation
+     * @param tokenIn Address of the input token
+     * @param tokenOut Address of the output token
+     * @param amountIn Amount of input tokens to swap
+     * @return amountOut Amount of output tokens received
+     */
+    function swap(address tokenIn, address tokenOut, uint256 amountIn) external returns (uint256 amountOut);
 }

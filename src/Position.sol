@@ -9,6 +9,15 @@ import {IPriceFeed} from "./interfaces/IPriceFeed.sol";
 import {IFactory} from "./interfaces/IFactory.sol";
 import {ITokenSwap} from "./interfaces/ITokenSwap.sol";
 
+/*
+██╗██████╗░██████╗░░█████╗░███╗░░██╗
+██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
+██║██████╦╝██████╔╝███████║██╔██╗██║
+██║██╔══██╗██╔══██╗██╔══██║██║╚████║
+██║██████╦╝██║░░██║██║░░██║██║░╚███║
+╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
+*/
+
 /**
  * @title Position
  * @author Ibran Protocol
@@ -27,10 +36,14 @@ import {ITokenSwap} from "./interfaces/ITokenSwap.sol";
  * - Dynamic token list management
  * - Price oracle integration for accurate valuations
  * - Restricted access control (only lending pool can call certain functions)
+ * 
+ * @custom:security This contract includes reentrancy protection and access controls
+ * to prevent unauthorized operations and ensure secure token transfers.
  */
 contract Position is ReentrancyGuard {
     using SafeERC20 for IERC20; // fungsi dari IERC20 akan ketambahan SafeERC20
 
+    // ============ ERRORS ============
     /// @notice Error thrown when there are insufficient tokens for an operation
     error InsufficientBalance();
     /// @notice Error thrown when attempting to process a zero amount
@@ -38,6 +51,7 @@ contract Position is ReentrancyGuard {
     /// @notice Error thrown when a function is called by unauthorized address
     error NotForWithdraw();
 
+    // ============ STATE VARIABLES ============
     /// @notice The collateral token address for this position
     address public collateralAssets;
     /// @notice The borrow token address for this position
@@ -57,6 +71,7 @@ contract Position is ReentrancyGuard {
     /// @notice Mapping from token address to token ID
     mapping(address => uint256) public tokenListsId;
 
+    // ============ EVENTS ============
     /// @notice Emitted when a position is liquidated
     /// @param user The address of the user whose position was liquidated
     event Liquidate(address user);
@@ -86,7 +101,8 @@ contract Position is ReentrancyGuard {
      * @param _borrow The address of the borrow token
      * @param _lpAddress The address of the lending pool
      * @param _factory The address of the factory contract
-     * @dev Sets up the initial position with collateral and borrow assets
+     * @dev Sets up the initial position with collateral and borrow assets.
+     * The collateral token is automatically added to the token list with ID 1.
      */
     constructor(address _collateral, address _borrow, address _lpAddress, address _factory) {
         collateralAssets = _collateral;
@@ -103,12 +119,18 @@ contract Position is ReentrancyGuard {
      * @notice Modifier to check and register tokens in the position's token list
      * @param _token The address of the token to check
      * @dev Automatically adds new tokens to the position's token tracking system
+     * by incrementing the counter and storing the token address with its ID.
      */
     modifier checkTokenList(address _token) {
         _checkTokenList(_token);
         _;
     }
 
+    /**
+     * @notice Internal function to check and register tokens in the token list
+     * @param _token The address of the token to check and register
+     * @dev If the token is not already in the list, it adds it with a new ID
+     */
     function _checkTokenList(address _token) internal {
         if (tokenListsId[_token] == 0) {
             ++counter;
@@ -122,7 +144,9 @@ contract Position is ReentrancyGuard {
      * @param amount The amount of collateral to withdraw
      * @param _user The address of the user to receive the collateral
      * @dev Only the lending pool can call this function
-     * @dev Transfers collateral tokens to the specified user
+     * @dev Transfers collateral tokens to the specified user using SafeERC20
+     * 
+     * @custom:error NotForWithdraw - If the caller is not the lending pool
      */
     function withdrawCollateral(uint256 amount, address _user) public {
         if (msg.sender != lpAddress) revert NotForWithdraw();
@@ -139,6 +163,10 @@ contract Position is ReentrancyGuard {
      * @dev Only the lending pool can call this function
      * @dev Uses PriceFeedIPriceFeed price feeds to calculate exchange rates
      * @dev Burns input tokens and mints output tokens
+     * 
+     * @custom:error NotForWithdraw - If the caller is not the lending pool
+     * @custom:error ZeroAmount - If the input amount is zero
+     * @custom:error InsufficientBalance - If there are insufficient tokens for the swap
      */
     function swapTokenByPosition(address _tokenIn, address _tokenOut, uint256 amountIn)
         public
@@ -167,6 +195,8 @@ contract Position is ReentrancyGuard {
      * @dev Only the lending pool can call this function
      * @dev If the selected token is not the borrow asset, it will be swapped first
      * @dev Any excess tokens after repayment are swapped back to the original token
+     * 
+     * @custom:error NotForWithdraw - If the caller is not the lending pool
      */
     function repayWithSelectedToken(uint256 amount, address _token) public {
         if (msg.sender != lpAddress) revert NotForWithdraw();
@@ -191,6 +221,7 @@ contract Position is ReentrancyGuard {
      * @return The calculated output amount
      * @dev Uses PriceFeedIPriceFeed price feeds to determine exchange rates
      * @dev Handles different token decimals automatically
+     * @dev Returns the calculated amount based on current market prices
      */
     function tokenCalculator(
         address _tokenIn,
@@ -216,6 +247,7 @@ contract Position is ReentrancyGuard {
      * @return The USD value of the token balance (in 18 decimals)
      * @dev Uses PriceFeedIPriceFeed price feeds to get current token prices
      * @dev Returns value normalized to 18 decimals for consistency
+     * @dev Useful for calculating total position value and health factors
      */
     function tokenValue(address token) public view returns (uint256) {
         uint256 tokenBalance = IERC20(token).balanceOf(address(this));

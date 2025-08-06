@@ -3,6 +3,15 @@ pragma solidity ^0.8.13;
 
 import {ILPDeployer} from "./interfaces/ILPDeployer.sol";
 
+/*
+██╗██████╗░██████╗░░█████╗░███╗░░██╗
+██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
+██║██████╦╝██████╔╝███████║██╔██╗██║
+██║██╔══██╗██╔══██╗██╔══██║██║╚████║
+██║██████╦╝██║░░██║██║░░██║██║░╚███║
+╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
+*/
+
 /**
  * @title LendingPoolFactory
  * @author Ibran Protocol
@@ -10,6 +19,14 @@ import {ILPDeployer} from "./interfaces/ILPDeployer.sol";
  * @dev This contract serves as the main entry point for creating new lending pools.
  * It maintains a registry of all created pools and manages token data streams
  * and cross-chain token senders.
+ * 
+ * The factory is responsible for:
+ * - Creating new lending pools with specified collateral and borrow tokens
+ * - Managing token data streams for price feeds
+ * - Tracking all created pools in a registry
+ * - Maintaining basic token senders for cross-chain operations
+ * 
+ * @custom:security This contract should only be called by authorized deployers
  */
 contract LendingPoolFactory {
     /**
@@ -50,6 +67,7 @@ contract LendingPoolFactory {
         address lendingPoolAddress;
     }
 
+    // ============ STATE VARIABLES ============
     /// @notice The owner of the factory contract
     address public owner;
 
@@ -81,6 +99,9 @@ contract LendingPoolFactory {
      * @notice Constructor for the LendingPoolFactory
      * @param _isHealthy The address of the IsHealthy contract
      * @param _lendingPoolDeployer The address of the lending pool deployer contract
+     * @param _protocol The address of the protocol contract
+     * @param _helper The address of the helper contract
+     * @dev Sets the initial owner to msg.sender and initializes all core contract addresses
      */
     constructor(address _isHealthy, address _lendingPoolDeployer, address _protocol, address _helper) {
         owner = msg.sender;
@@ -92,12 +113,17 @@ contract LendingPoolFactory {
 
     /**
      * @notice Modifier to restrict function access to the owner only
+     * @dev Reverts if the caller is not the owner
      */
     modifier onlyOwner() {
         _onlyOwner();
         _;
     }
 
+    /**
+     * @notice Internal function to check if the caller is the owner
+     * @dev Reverts with "Only owner can call this function" if the caller is not the owner
+     */
     function _onlyOwner() internal view {
         require(msg.sender == owner, "Only owner can call this function");
     }
@@ -109,7 +135,10 @@ contract LendingPoolFactory {
      * @param ltv The Loan-to-Value ratio for the pool (in basis points)
      * @return The address of the newly created lending pool
      * @dev This function deploys a new lending pool using the lending pool deployer
-     * and adds it to the pools registry
+     * and adds it to the pools registry. The LTV should be provided in basis points
+     * (e.g., 7500 for 75%).
+     * 
+     * @custom:error "Only owner can call this function" - If caller is not the owner
      */
     function createLendingPool(address collateralToken, address borrowToken, uint256 ltv) public returns (address) {
         address lendingPool = ILPDeployer(lendingPoolDeployer).deployLendingPool(collateralToken, borrowToken, ltv);
@@ -124,7 +153,10 @@ contract LendingPoolFactory {
      * @notice Adds a token data stream for price feeds and other data
      * @param _token The address of the token
      * @param _dataStream The address of the data stream contract
-     * @dev Only callable by the owner
+     * @dev Only callable by the owner. This function is used to set up price feeds
+     * and other data streams for tokens in the lending protocol.
+     * 
+     * @custom:error "Only owner can call this function" - If caller is not the owner
      */
     function addTokenDataStream(address _token, address _dataStream) public onlyOwner {
         tokenDataStream[_token] = _dataStream;
