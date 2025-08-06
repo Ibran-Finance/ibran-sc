@@ -19,46 +19,16 @@ import {LendingPool} from "../src/LendingPool.sol";
 import {Position} from "../src/Position.sol";
 import {Pricefeed} from "../src/Pricefeed.sol";
 
-/*
-██╗██████╗░██████╗░░█████╗░███╗░░██╗
-██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
-██║██████╦╝██████╔╝███████║██╔██╗██║
-██║██╔══██╗██╔══██╗██╔══██║██║╚████║
-██║██████╦╝██║░░██║██║░░██║██║░╚███║
-╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
-*/
-
-/**
- * @title IbranScript
- * @author Ibran Team
- * @notice Main deployment script for the Ibran cross-chain lending protocol
- * @dev This script handles the deployment of all core contracts including:
- * - Mock tokens (USDC, USDT, WXTZ, WBTC, WETH)
- * - Bridge token senders and receivers
- * - Lending pool infrastructure
- * - Price feed contracts
- * - Protocol governance contracts
- * 
- * The script supports deployment on multiple chains:
- * - Origin chain (Etherlink Testnet - Chain ID: 128123)
- * - Destination chains (Base Sepolia - 84532, Arbitrum Sepolia - 421614)
- * 
- * @custom:security This script should only be run by authorized deployers
- */
 contract IbranScript is Script {
-    // Core infrastructure contracts
     HelperTestnet public helperTestnet;
     IbranBridgeTokenReceiver public ibranBridgeTokenReceiver;
     IbranBridgeTokenSender public ibranBridgeTokenSender;
-    
-    // Mock token contracts
     MockUSDC public mockUSDC;
     MockUSDT public mockUSDT;
     MockWXTZ public mockWXTZ;
     MockWBTC public mockWBTC;
     MockWETH public mockWETH;
 
-    // Protocol contracts
     Protocol public protocol;
     IsHealthy public isHealthy;
     LendingPoolDeployer public lendingPoolDeployer;
@@ -120,10 +90,6 @@ contract IbranScript is Script {
     uint32 public DESTINATION_chainId = 84532;
     // uint32 public DESTINATION_chainId = 421614;
 
-    /**
-     * @notice Sets up the deployment environment by creating a fork of the target chain
-     * @dev Currently configured for Etherlink testnet. Can be modified for other chains
-     */
     function setUp() public {
         // host chain (etherlink)
         vm.createSelectFork(vm.rpcUrl("etherlink_testnet"));
@@ -132,15 +98,6 @@ contract IbranScript is Script {
         // vm.createSelectFork(vm.rpcUrl("base_sepolia"));
     }
 
-    /**
-     * @notice Main deployment function that orchestrates the entire deployment process
-     * @dev This function handles three different deployment scenarios:
-     * 1. Destination chain deployment - Deploys bridge token receivers and mock tokens
-     * 2. Origin chain initial deployment - Deploys all protocol contracts and infrastructure
-     * 3. Origin chain bridge setup - Configures cross-chain bridges between origin and destination
-     * 
-     * The function uses environment variables for private key and chain configuration
-     */
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(privateKey);
@@ -252,17 +209,6 @@ contract IbranScript is Script {
         vm.stopBroadcast();
     }
 
-    /**
-     * @notice Deploys all mock tokens and configures their bridge connections
-     * @dev This function deploys USDC, USDT, WXTZ, WBTC, and WETH mock tokens
-     * and pairs them with their respective bridge token receivers on the destination chain
-     * 
-     * @custom:error "UsdcBridgeTokenReceiver is not set" - If USDC bridge receiver address is not configured
-     * @custom:error "UsdtBridgeTokenReceiver is not set" - If USDT bridge receiver address is not configured
-     * @custom:error "WxtzBridgeTokenReceiver is not set" - If WXTZ bridge receiver address is not configured
-     * @custom:error "BtcBridgeTokenReceiver is not set" - If WBTC bridge receiver address is not configured
-     * @custom:error "EthBridgeTokenReceiver is not set" - If WETH bridge receiver address is not configured
-     */
     function deployMockToken() public {
         if (UsdcBridgeTokenReceiver == address(0)) revert("UsdcBridgeTokenReceiver is not set");
         mockUSDC = new MockUSDC(address(helperTestnet));
@@ -301,16 +247,6 @@ contract IbranScript is Script {
         console.log("export const ORIGIN_mockWETH = ", address(mockWETH), ";");
     }
 
-    /**
-     * @notice Creates a bridge token sender contract and pairs it with a token
-     * @dev This function deploys an IbranBridgeTokenSender contract that enables
-     * cross-chain token transfers between the origin and destination chains
-     * 
-     * @param _helperTestnet Address of the HelperTestnet contract
-     * @param _mockToken Address of the mock token to be bridged
-     * @param _ibranBridgeTokenReceiver Address of the bridge token receiver on destination chain
-     * @param _chainId Chain ID of the destination chain
-     */
     function pairBridgeToToken(
         address _helperTestnet,
         address _mockToken,

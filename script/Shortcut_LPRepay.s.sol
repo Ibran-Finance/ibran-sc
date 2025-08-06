@@ -7,45 +7,12 @@ import {IERC20Metadata} from "@openzeppelin-contracts/contracts/token/ERC20/exte
 import {Helper} from "./Helper.sol";
 import {ILendingPool} from "../src/interfaces/ILendingPool.sol";
 
-/*
-██╗██████╗░██████╗░░█████╗░███╗░░██╗
-██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
-██║██████╦╝██████╔╝███████║██╔██╗██║
-██║██╔══██╗██╔══██╗██╔══██║██║╚████║
-██║██████╦╝██║░░██║██║░░██║██║░╚███║
-╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
-*/
-
-/**
- * @title LPRepayScript
- * @author Ibran Team
- * @notice Script for repaying debt to the lending pool
- * @dev This script allows users to repay their borrowed debt to the lending pool.
- * The script handles:
- * - Calculating the repayment amount with proper decimals
- * - Approving the lending pool to spend the repayment token
- * - Executing the repayment with selected token
- * - Tracking debt before and after repayment
- * 
- * The script provides comprehensive logging to track the repayment process
- * and verify the debt reduction.
- * 
- * @custom:security This script should only be run by authorized users with proper
- * private key management
- */
 contract LPRepayScript is Script, Helper {
-    // ============ CONFIGURATION PARAMETERS ============
-    /** @notice User's wallet address for the repay operation */
+    // --------- FILL THIS ----------
     address public yourWallet = vm.envAddress("ADDRESS");
-    /** @notice Amount to repay (will be multiplied by token decimals) */
     uint256 public amount = 1;
     // ----------------------------
 
-    /**
-     * @notice Sets up the deployment environment by creating a fork of the target chain
-     * @dev Currently configured for Etherlink testnet. Can be modified for other chains
-     * by uncommenting the appropriate vm.createSelectFork line
-     */
     function setUp() public {
         // ***************** HOST CHAIN *****************
         vm.createSelectFork(vm.rpcUrl("etherlink_testnet"));
@@ -54,20 +21,6 @@ contract LPRepayScript is Script, Helper {
         // vm.createSelectFork(vm.rpcUrl("avalanche_fuji"));
     }
 
-    /**
-     * @notice Main function that executes the debt repayment to the lending pool
-     * @dev This function performs the following steps:
-     * 1. Gets the borrow token address from the lending pool
-     * 2. Calculates the repayment amount with proper decimals
-     * 3. Checks the user's debt before repayment
-     * 4. Approves the lending pool to spend the repayment token
-     * 5. Calculates the shares to be repaid
-     * 6. Executes the repayment with selected token (USDC)
-     * 7. Tracks the debt after repayment
-     * 
-     * The function includes comprehensive logging to track the repayment process
-     * and provides detailed information about debt before and after the operation.
-     */
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         address borrowToken = ILendingPool(ORIGIN_lendingPool).borrowToken();

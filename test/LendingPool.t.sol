@@ -16,95 +16,38 @@ import {HelperTestnet} from "../src/HelperTestnet.sol";
 import {IsHealthy} from "../src/IsHealthy.sol";
 import {Protocol} from "../src/Protocol.sol";
 
-/*
-██╗██████╗░██████╗░░█████╗░███╗░░██╗
-██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
-██║██████╦╝██████╔╝███████║██╔██╗██║
-██║██╔══██╗██╔══██╗██╔══██║██║╚████║
-██║██████╦╝██║░░██║██║░░██║██║░╚███║
-╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
-*/
-
-/**
- * @title LendingPoolFactoryHyperlaneTest
- * @dev Comprehensive test suite for the IBRAN lending pool system
- * @notice Tests lending pool functionality including supply, borrow, repay, and cross-chain operations
- * @author IBRAN Team
- */
 contract LendingPoolFactoryHyperlaneTest is Test {
-    /// @notice Health checker contract for position validation
     IsHealthy public isHealthy;
-    
-    /// @notice Deployer contract for creating new lending pools
     LendingPoolDeployer public lendingPoolDeployer;
-    
-    /// @notice Factory contract for managing lending pools
     LendingPoolFactory public lendingPoolFactory;
-    
-    /// @notice Main lending pool contract for testing
     LendingPool public lendingPool;
-    
-    /// @notice Position contract for managing user positions
     Position public position;
-    
-    /// @notice Mock USDC token for testing
     MockUSDC public usdc;
-    
-    /// @notice Mock WBTC token for testing
     MockWBTC public wbtc;
-    
-    /// @notice Mock WETH token for testing
     MockWETH public weth;
-    
-    /// @notice Mock USDT token for testing
     MockUSDT public usdt;
-    
-    /// @notice Mock WXTZ token for testing
     MockWXTZ public wxtz;
-    
-    /// @notice Protocol contract for system management
     Protocol public protocol;
-    
-    /// @notice Helper contract for testnet operations
     HelperTestnet public helperTestnet;
 
-    /// @notice Owner address for administrative operations
     address public owner = makeAddr("owner");
 
-    /// @notice Test user Alice
     address public alice = makeAddr("alice");
-    
-    /// @notice Test user Bob
     address public bob = makeAddr("bob");
 
-    /// @notice Arbitrum BTC/USD price feed address
     address public ArbBtcUsd = 0x56a43EB56Da12C0dc1D972ACb089c06a5dEF8e69;
-    
-    /// @notice Arbitrum ETH/USD price feed address
     address public ArbEthUsd = 0xd30e2101a97dcbAeBCBC04F14C3f624E67A35165;
-    
-    /// @notice Arbitrum XTZ/USD price feed address
     address public ArbXtzUsd = 0xe27498c9Cc8541033F265E63c8C29A97CfF9aC6D;
-    
-    /// @notice Arbitrum USDC/USD price feed address
     address public ArbUsdcUsd = 0x0153002d20B96532C639313c2d54c3dA09109309;
-    
-    /// @notice Arbitrum USDT/USD price feed address
     address public ArbUsdtUsd = 0x80EDee6f667eCc9f63a0a6f55578F870651f06A4;
 
-    /// @notice Chain ID for testing (Arbitrum Sepolia)
     uint256 public chainId = 421614;
 
-    /// @notice Flag to indicate if price feed is active
     bool priceFeedIsActive = false;
 
     // RUN
     // forge test --match-contract LendingPoolFactoryHyperlaneTest
 
-    /**
-     * @notice Sets up the test environment
-     * @dev Initializes all contracts and mints initial tokens to test users
-     */
     function setUp() public {
         vm.startPrank(alice);
         // vm.createSelectFork("https://api.avax-test.network/ext/bc/C/rpc");
@@ -147,23 +90,12 @@ contract LendingPoolFactoryHyperlaneTest is Test {
         weth.mintMock(bob, 200e18);
     }
 
-    /**
-     * @notice Tests lending pool deployment functionality
-     * @dev Verifies that lending pools can be created successfully
-     */
     function test_deployLendingPool() public {
         vm.startPrank(alice);
         lendingPoolFactory.createLendingPool(address(weth), address(usdc), 7e17);
         vm.stopPrank();
     }
 
-    /**
-     * @notice Helper function to supply liquidity to the lending pool
-     * @dev Approves tokens and supplies liquidity for a specific user
-     * @param _user Address of the user supplying liquidity
-     * @param _token Address of the token being supplied
-     * @param _amount Amount of tokens to supply
-     */
     function helper_supply(address _user, address _token, uint256 _amount) public {
         vm.startPrank(_user);
         IERC20(address(_token)).approve(address(lendingPool), _amount);
@@ -171,10 +103,6 @@ contract LendingPoolFactoryHyperlaneTest is Test {
         vm.stopPrank();
     }
 
-    /**
-     * @notice Helper function to set up supply and borrow scenario
-     * @dev Alice supplies USDC liquidity, Bob supplies WETH collateral and borrows USDC
-     */
     function helper_supply_borrow() public {
         vm.startPrank(alice);
         IERC20(address(usdc)).approve(address(lendingPool), 1000e6);
@@ -188,10 +116,6 @@ contract LendingPoolFactoryHyperlaneTest is Test {
         vm.stopPrank();
     }
 
-    /**
-     * @notice Helper function to set up and execute repayment scenario
-     * @dev Sets up supply/borrow scenario and performs partial repayments
-     */
     function helper_repay() public {
         helper_supply_borrow();
 
@@ -206,10 +130,6 @@ contract LendingPoolFactoryHyperlaneTest is Test {
         vm.stopPrank();
     }
 
-    /**
-     * @notice Tests position health validation
-     * @dev Verifies that borrowing fails when collateral is insufficient
-     */
     function test_isHealthy() public {
         vm.startPrank(alice);
         IERC20(address(usdc)).approve(address(lendingPool), 10_000e6);
@@ -229,10 +149,6 @@ contract LendingPoolFactoryHyperlaneTest is Test {
         vm.stopPrank();
     }
 
-    /**
-     * @notice Tests borrowing functionality with proper validation
-     * @dev Verifies borrowing works correctly and fails with insufficient collateral
-     */
     function test_borrow() public {
         // bob borrow 100 usdc
         uint256 borrowed = 100e6;
@@ -293,10 +209,6 @@ contract LendingPoolFactoryHyperlaneTest is Test {
         vm.stopPrank();
     }
 
-    /**
-     * @notice Tests liquidity withdrawal functionality
-     * @dev Verifies that users can withdraw their supplied liquidity correctly
-     */
     function test_withdrawLiquidity() public {
         // alice supply 1000 usdc
         helper_supply(alice, address(usdc), 1000e6);
@@ -355,10 +267,6 @@ contract LendingPoolFactoryHyperlaneTest is Test {
         );
     }
 
-    /**
-     * @notice Tests debt repayment functionality
-     * @dev Verifies that users can repay their borrowed amounts correctly
-     */
     function test_repay() public {
         helper_supply_borrow();
 
@@ -409,10 +317,6 @@ contract LendingPoolFactoryHyperlaneTest is Test {
         assertEq(lendingPool.totalBorrowAssets(), 0, "Total borrow assets should be 0 after full repay");
     }
 
-    /**
-     * @notice Tests repayment with position token swapping
-     * @dev Verifies repayment functionality using tokens swapped within position
-     */
     function test_part2_repay() public {
         console.log("----- before borrow");
         console.log("balance bob usdc", IERC20(address(usdc)).balanceOf(bob));
@@ -497,10 +401,6 @@ contract LendingPoolFactoryHyperlaneTest is Test {
         vm.stopPrank();
     }
 
-    /**
-     * @notice Tests advanced repayment scenarios with token swapping
-     * @dev Verifies complex repayment flows involving multiple token swaps
-     */
     function test_part3_repay() public {
         console.log("----- before borrow");
         console.log("total borrow shares before", lendingPool.totalBorrowShares()); // 0
@@ -550,10 +450,6 @@ contract LendingPoolFactoryHyperlaneTest is Test {
         vm.stopPrank();
     }
 
-    /**
-     * @notice Tests comprehensive lending pool workflow
-     * @dev Verifies complete lending pool operations including collateral, swaps, and repayments
-     */
     function test_part4_repay() public {
         vm.startPrank(bob);
         // --------- supply collateral
@@ -620,10 +516,6 @@ contract LendingPoolFactoryHyperlaneTest is Test {
         vm.stopPrank();
     }
 
-    /**
-     * @notice Tests withdrawal with shares calculation
-     * @dev Verifies withdrawal functionality with proper share calculations
-     */
     function test_withdraw_withshares() public {
         helper_repay();
 
@@ -641,10 +533,6 @@ contract LendingPoolFactoryHyperlaneTest is Test {
         vm.stopPrank();
     }
 
-    /**
-     * @notice Tests complete web application workflow
-     * @dev Verifies end-to-end lending pool operations as used in web interface
-     */
     function test_web_flow() public {
         vm.startPrank(bob);
 
@@ -721,10 +609,6 @@ contract LendingPoolFactoryHyperlaneTest is Test {
         vm.stopPrank();
     }
 
-    /**
-     * @notice Tests various lending pool scenarios
-     * @dev Verifies different combinations of lending pool operations
-     */
     function test_scenarios() public {
         helper_supply(alice, address(usdc), 10_000e6);
 
@@ -742,10 +626,6 @@ contract LendingPoolFactoryHyperlaneTest is Test {
         vm.stopPrank();
     }
 
-    /**
-     * @notice Tests interest rate calculation and accrual
-     * @dev Verifies that interest is calculated and accrued correctly over time
-     */
     function test_counting_interest_rate() public {
         helper_supply_borrow();
         vm.warp(block.timestamp + 365 days);

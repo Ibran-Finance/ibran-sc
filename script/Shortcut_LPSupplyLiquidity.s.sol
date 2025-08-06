@@ -7,46 +7,12 @@ import {IERC20} from "@openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import {Helper} from "./Helper.sol";
 import {ILendingPool} from "../src/interfaces/ILendingPool.sol";
 
-/*
-██╗██████╗░██████╗░░█████╗░███╗░░██╗
-██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
-██║██████╦╝██████╔╝███████║██╔██╗██║
-██║██╔══██╗██╔══██╗██╔══██║██║╚████║
-██║██████╦╝██║░░██║██║░░██║██║░╚███║
-╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
-*/
-
-/**
- * @title LPSupplyLiquidityScript
- * @author Ibran Team
- * @notice Script for supplying liquidity to the lending pool
- * @dev This script allows users to supply liquidity to the lending pool by depositing
- * the borrow token. The script handles:
- * - Checking user's token balance before supply
- * - Calculating the supply amount with proper decimals
- * - Approving the lending pool to spend the tokens
- * - Executing the liquidity supply operation
- * - Tracking balance before and after supply
- * 
- * The script includes balance validation to ensure the user has sufficient tokens
- * before attempting to supply liquidity.
- * 
- * @custom:security This script should only be run by authorized users with proper
- * private key management
- */
 contract LPSupplyLiquidityScript is Script, Helper {
-    // ============ CONFIGURATION PARAMETERS ============
-    /** @notice User's wallet address for the supply liquidity operation */
+    // --------- FILL THIS ----------
     address public yourWallet = vm.envAddress("ADDRESS");
-    /** @notice Amount to supply (will be multiplied by token decimals) */
     uint256 public amount = 1000;
     // ----------------------------
 
-    /**
-     * @notice Sets up the deployment environment by creating a fork of the target chain
-     * @dev Currently configured for Etherlink testnet. Can be modified for other chains
-     * by uncommenting the appropriate vm.createSelectFork line
-     */
     function setUp() public {
         // ***************** HOST CHAIN *****************
         vm.createSelectFork(vm.rpcUrl("etherlink_testnet"));
@@ -61,22 +27,7 @@ contract LPSupplyLiquidityScript is Script, Helper {
         // vm.createSelectFork(vm.rpcUrl("op_sepolia"));
     }
 
-    /**
-     * @notice Main function that executes the liquidity supply to the lending pool
-     * @dev This function performs the following steps:
-     * 1. Gets the borrow token address from the lending pool
-     * 2. Calculates the supply amount with proper decimals
-     * 3. Adjusts amount based on token decimals (3 for tokens with >6 decimals)
-     * 4. Checks if user has sufficient balance
-     * 5. Approves the lending pool to spend the tokens
-     * 6. Executes the liquidity supply operation
-     * 7. Tracks balance before and after supply
-     * 
-     * The function includes comprehensive logging to track the supply process
-     * and provides detailed information about balances and supply amounts.
-     * 
-     * @custom:error Insufficient token balance for supply operation
-     */
+    // Make sure you have enough collateral in the wallet
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         address borrowToken = ILendingPool(ORIGIN_lendingPool).borrowToken();

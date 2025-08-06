@@ -10,48 +10,15 @@ import {ILendingPool} from "../src/interfaces/ILendingPool.sol";
 import {IHelperTestnet} from "../src/interfaces/IHelperTestnet.sol";
 import {IFactory} from "../src/interfaces/IFactory.sol";
 
-/*
-██╗██████╗░██████╗░░█████╗░███╗░░██╗
-██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
-██║██████╦╝██████╔╝███████║██╔██╗██║
-██║██╔══██╗██╔══██╗██╔══██║██║╚████║
-██║██████╦╝██║░░██║██║░░██║██║░╚███║
-╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
-*/
-
-/**
- * @title LPBorrowScript
- * @author Ibran Team
- * @notice Script for borrowing debt from the lending pool with cross-chain functionality
- * @dev This script allows users to borrow tokens from the lending pool and automatically
- * handles the cross-chain gas payment for the transaction. The script:
- * - Checks if the lending pool has sufficient borrow balance
- * - Calculates the required gas payment for cross-chain operations
- * - Executes the borrow operation with proper gas handling
- * 
- * The script supports multiple chains and automatically detects the current chain
- * to determine if gas payment is required for cross-chain operations.
- * 
- * @custom:security This script should only be run by authorized users with proper
- * private key management
- */
 contract LPBorrowScript is Script, Helper {
-    // ============ CONFIGURATION PARAMETERS ============
-    /** @notice User's wallet address for the borrow operation */
+    // --------- FILL THIS ----------
     address public yourWallet = vm.envAddress("ADDRESS");
-    /** @notice Amount to borrow (will be multiplied by token decimals) */
     uint256 public amount = 1;
     // uint32 public chainId = 421614;
-    /** @notice Destination chain ID for the borrow operation */
     uint32 public chainId = 84532;
     // uint256 public chainId = 128123;
     // ----------------------------
 
-    /**
-     * @notice Sets up the deployment environment by creating a fork of the target chain
-     * @dev Currently configured for Etherlink testnet. Can be modified for other chains
-     * by uncommenting the appropriate vm.createSelectFork line
-     */
     function setUp() public {
         // ***************** HOST CHAIN *****************
         vm.createSelectFork(vm.rpcUrl("etherlink_testnet"));
@@ -66,20 +33,6 @@ contract LPBorrowScript is Script, Helper {
         // vm.createSelectFork(vm.rpcUrl("op_sepolia"));
     }
 
-    /**
-     * @notice Main function that executes the borrow operation from the lending pool
-     * @dev This function performs the following steps:
-     * 1. Gets the borrow token address from the lending pool
-     * 2. Checks if the lending pool has sufficient borrow balance
-     * 3. Calculates the borrow amount with proper decimals
-     * 4. Determines if cross-chain gas payment is required
-     * 5. Executes the borrow operation with appropriate gas handling
-     * 
-     * The function includes comprehensive logging to track the operation status
-     * and provides detailed information about balances and gas calculations.
-     * 
-     * @custom:error Insufficient borrow balance in the lending pool
-     */
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         address borrowToken = ILendingPool(ORIGIN_lendingPool).borrowToken();

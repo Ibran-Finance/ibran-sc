@@ -6,15 +6,6 @@ import {IPriceFeed} from "./interfaces/IPriceFeed.sol";
 import {IERC20Metadata} from "@openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import {IPosition} from "./interfaces/IPosition.sol";
 
-/*
-██╗██████╗░██████╗░░█████╗░███╗░░██╗
-██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
-██║██████╦╝██████╔╝███████║██╔██╗██║
-██║██╔══██╗██╔══██╗██╔══██║██║╚████║
-██║██████╦╝██║░░██║██║░░██║██║░╚███║
-╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
-*/
-
 /**
  * @title IsHealthy
  * @author Ibran Protocol
@@ -30,7 +21,6 @@ import {IPosition} from "./interfaces/IPosition.sol";
  *                  called before allowing additional borrows or liquidations
  */
 contract IsHealthy {
-    // ============ ERRORS ============
     /**
      * @notice Error thrown when the position has insufficient collateral
      * @dev This error is thrown when either:

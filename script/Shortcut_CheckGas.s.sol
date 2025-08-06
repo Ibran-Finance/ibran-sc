@@ -5,32 +5,7 @@ import {Script, console} from "forge-std/Script.sol";
 import {Helper} from "./Helper.sol";
 import {IInterchainGasPaymaster} from "@hyperlane-xyz/interfaces/IInterchainGasPaymaster.sol";
 
-/*
-██╗██████╗░██████╗░░█████╗░███╗░░██╗
-██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
-██║██████╦╝██████╔╝███████║██╔██╗██║
-██║██╔══██╗██╔══██╗██╔══██║██║╚████║
-██║██████╦╝██║░░██║██║░░██║██║░╚███║
-╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
-*/
-
-/**
- * @title CheckGasScript
- * @author Ibran Team
- * @notice Script for checking gas payment quotes for cross-chain operations
- * @dev This script is used to check the gas payment requirements for cross-chain
- * operations using the Hyperlane protocol. It queries the InterchainGasPaymaster
- * to get gas payment quotes for specific destination chains and amounts.
- * 
- * The script includes commented configuration for various Hyperlane contracts
- * that can be used for different chain deployments.
- * 
- * @custom:security This script should only be run by authorized users for testing
- * gas payment calculations
- */
 contract CheckGasScript is Script, Helper {
-    // ============ HYPERLANE CONTRACT CONFIGURATIONS ============
-    // Configuration for various Hyperlane contracts (commented for reference)
     //     domainRoutingIsmFactory: "0x8F9CbC0b137E1edf26a41c6f9DFca77966a67b80"
     // interchainAccountRouter: "0xA0C8fB5206642Bf3693176D2369Bdd0e51271b67"
     // mailbox: "0x58545de70CeF725c3F9623f8fAB5e53000Cd3B7D"
@@ -45,7 +20,6 @@ contract CheckGasScript is Script, Helper {
     // testRecipient: "0xcb32106E32Ca136cbC54ca913025bc87FcFa8ECD"
     // validatorAnnounce: "0x1Ae6C5604AfDFd8A0Cc9753166987A6E97ced42e"
 
-    // Alternative configuration (commented for reference)
     // staticMerkleRootMultisigIsmFactory: "0x0D56c59F236eb40038adBAb88F497f5eEfF787CD"
     //     staticMessageIdMultisigIsmFactory: "0xA7c337D09b9e6A44f54869dB63683aFbf330dC2c"
     //     staticAggregationIsmFactory: "0x02A7dA42C5f68444120B1090E8f6a8bB45A0FBC5"
@@ -59,28 +33,12 @@ contract CheckGasScript is Script, Helper {
     //     validatorAnnounce: "0x732788f4671aA3cA49457aa88520F2aAA0E32096"
     //     testRecipient: "0x45C650e87fE5df1CC2D4F1aceD142FA9EB2eb3AA"
     //     merkleTreeHook: "0x8e1327D6aDa9Da68ddd0F2b212D52ef6166a429C"
-    
-    /** @notice InterchainGasPaymaster contract address */
     address public interchainGasPaymaster = 0xF2eeC8fD0eDE71006E7f423200e8615E48A73890;
 
-    /**
-     * @notice Sets up the deployment environment by creating a fork of the target chain
-     * @dev Currently no fork is created, but can be modified for other chains
-     * by uncommenting the appropriate vm.createSelectFork line
-     */
     function setUp() public {
         // vm.createSelectFork(vm.rpcUrl("base_sepolia"));
     }
 
-    /**
-     * @notice Main function that checks gas payment quotes for cross-chain operations
-     * @dev This function queries the InterchainGasPaymaster to get a gas payment quote
-     * for sending 1e6 (1,000,000) units to Base Sepolia testnet. The quote is logged
-     * to the console for reference.
-     * 
-     * The function demonstrates how to use the IInterchainGasPaymaster interface
-     * to calculate gas requirements for cross-chain operations.
-     */
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(privateKey);
