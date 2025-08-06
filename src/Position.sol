@@ -5,7 +5,7 @@ import {IERC20} from "@openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import {IERC20Metadata} from "@openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import {SafeERC20} from "@openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
-import {IChainLink} from "./interfaces/IChainLink.sol";
+import {IPriceFeed} from "./interfaces/IPriceFeed.sol";
 import {IFactory} from "./interfaces/IFactory.sol";
 import {ITokenSwap} from "./interfaces/ITokenSwap.sol";
 
@@ -137,7 +137,7 @@ contract Position is ReentrancyGuard {
      * @param amountIn The amount of input tokens to swap
      * @return amountOut The amount of output tokens received
      * @dev Only the lending pool can call this function
-     * @dev Uses Chainlink price feeds to calculate exchange rates
+     * @dev Uses PriceFeedIPriceFeed price feeds to calculate exchange rates
      * @dev Burns input tokens and mints output tokens
      */
     function swapTokenByPosition(address _tokenIn, address _tokenOut, uint256 amountIn)
@@ -189,7 +189,7 @@ contract Position is ReentrancyGuard {
      * @param _tokenInPrice The address of the input token's price feed
      * @param _tokenOutPrice The address of the output token's price feed
      * @return The calculated output amount
-     * @dev Uses Chainlink price feeds to determine exchange rates
+     * @dev Uses PriceFeedIPriceFeed price feeds to determine exchange rates
      * @dev Handles different token decimals automatically
      */
     function tokenCalculator(
@@ -201,8 +201,8 @@ contract Position is ReentrancyGuard {
     ) public view returns (uint256) {
         uint256 tokenInDecimal = IERC20Metadata(_tokenIn).decimals();
         uint256 tokenOutDecimal = IERC20Metadata(_tokenOut).decimals();
-        (, int256 quotePrice,,,) = IChainLink(_tokenInPrice).latestRoundData();
-        (, int256 basePrice,,,) = IChainLink(_tokenOutPrice).latestRoundData();
+        (, int256 quotePrice,,,) = IPriceFeed(_tokenInPrice).latestRoundData();
+        (, int256 basePrice,,,) = IPriceFeed(_tokenOutPrice).latestRoundData();
 
         uint256 amountOut =
             (_amountIn * ((uint256(quotePrice) * (10 ** tokenOutDecimal)) / uint256(basePrice))) / 10 ** tokenInDecimal;
@@ -214,7 +214,7 @@ contract Position is ReentrancyGuard {
      * @notice Calculates the USD value of a token balance in the position
      * @param token The address of the token to calculate value for
      * @return The USD value of the token balance (in 18 decimals)
-     * @dev Uses Chainlink price feeds to get current token prices
+     * @dev Uses PriceFeedIPriceFeed price feeds to get current token prices
      * @dev Returns value normalized to 18 decimals for consistency
      */
     function tokenValue(address token) public view returns (uint256) {
@@ -223,7 +223,7 @@ contract Position is ReentrancyGuard {
 
         address tokenDataStream = IFactory(factory).tokenDataStream(token);
 
-        (, int256 tokenPrice,,,) = IChainLink(tokenDataStream).latestRoundData();
+        (, int256 tokenPrice,,,) = IPriceFeed(tokenDataStream).latestRoundData();
 
         uint256 tokenAdjustedPrice = uint256(tokenPrice) * 1e18 / 1e8;
         uint256 value = (tokenBalance * tokenAdjustedPrice) / (10 ** tokenDecimals);

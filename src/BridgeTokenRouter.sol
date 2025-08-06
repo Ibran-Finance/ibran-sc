@@ -23,8 +23,7 @@ contract BridgeTokenRouter {
 
     constructor(address _helperTestnet, address _token) {
         helperTestnet = _helperTestnet;
-        (address _mailbox, address _interchainGasPaymaster,) =
-            IHelperTestnet(helperTestnet).chains(block.chainid);
+        (address _mailbox, address _interchainGasPaymaster,) = IHelperTestnet(helperTestnet).chains(block.chainid);
         if (_mailbox == address(0)) revert MailboxNotSet();
         if (_interchainGasPaymaster == address(0)) revert InterchainGasPaymasterNotSet();
 

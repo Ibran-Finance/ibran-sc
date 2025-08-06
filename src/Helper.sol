@@ -8,6 +8,7 @@ contract Helper {
         AVALANCHE_FUJI, // 1
         ARBITRUM_SEPOLIA, // 2
         BASE_SEPOLIA // 6
+
     }
 
     mapping(SupportedNetworks enumValue => string humanReadableName) public networks;
