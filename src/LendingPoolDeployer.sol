@@ -5,7 +5,7 @@ import {LendingPool} from "./LendingPool.sol";
 
 /**
  * @title LendingPoolDeployer
- * @author Caer Protocol
+ * @author Ibran Protocol
  * @notice A factory contract for deploying new LendingPool instances
  * @dev This contract is responsible for creating new lending pools with specified parameters
  *

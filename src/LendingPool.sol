@@ -10,7 +10,7 @@ import {IFactory} from "./interfaces/IFactory.sol";
 import {IPosition} from "./interfaces/IPosition.sol";
 import {IIsHealthy} from "./interfaces/IIsHealthy.sol";
 import {ITokenSwap} from "./interfaces/ITokenSwap.sol";
-import {ICaerBridgeTokenSender} from "./interfaces/ICaerBridgeTokenSender.sol";
+import {IIbranBridgeTokenSender} from "./interfaces/IIbranBridgeTokenSender.sol";
 import {IHelperTestnet} from "./interfaces/IHelperTestnet.sol";
 
 contract LendingPool is ReentrancyGuard {
@@ -248,7 +248,7 @@ contract LendingPool is ReentrancyGuard {
                 IInterchainGasPaymaster(interchainGasPaymaster).quoteGasPayment(destinationDomain, userAmount); // TODO: BURN
 
             IERC20(borrowToken).approve(bridgeTokenSenders, userAmount);
-            ICaerBridgeTokenSender(bridgeTokenSenders).bridge{value: gasAmount}(userAmount, msg.sender, borrowToken);
+            IIbranBridgeTokenSender(bridgeTokenSenders).bridge{value: gasAmount}(userAmount, msg.sender, borrowToken);
             IERC20(borrowToken).safeTransfer(protocol, protocolFee);
         } else {
             IERC20(borrowToken).safeTransfer(msg.sender, userAmount);

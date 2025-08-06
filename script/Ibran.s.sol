@@ -6,8 +6,8 @@ import {MockUSDC} from "../src/mocks/MockUSDC.sol";
 import {MockUSDT} from "../src/mocks/MockUSDT.sol";
 import {MockWXTZ} from "../src/mocks/MockWXTZ.sol";
 import {HelperTestnet} from "../src/HelperTestnet.sol";
-import {CaerBridgeTokenSender} from "../src/CaerBridgeTokenSender.sol";
-import {CaerBridgeTokenReceiver} from "../src/CaerBridgeTokenReceiver.sol";
+import {IbranBridgeTokenSender} from "../src/IbranBridgeTokenSender.sol";
+import {IbranBridgeTokenReceiver} from "../src/IbranBridgeTokenReceiver.sol";
 import {MockWBTC} from "../src/mocks/MockWBTC.sol";
 import {MockWETH} from "../src/mocks/MockWETH.sol";
 import {ITokenSwap} from "../src/interfaces/ITokenSwap.sol";
@@ -19,10 +19,10 @@ import {LendingPool} from "../src/LendingPool.sol";
 import {Position} from "../src/Position.sol";
 import {Pricefeed} from "../src/Pricefeed.sol";
 
-contract CaerScript is Script {
+contract IbranScript is Script {
     HelperTestnet public helperTestnet;
-    CaerBridgeTokenReceiver public caerBridgeTokenReceiver;
-    CaerBridgeTokenSender public caerBridgeTokenSender;
+    IbranBridgeTokenReceiver public ibranBridgeTokenReceiver;
+    IbranBridgeTokenSender public ibranBridgeTokenSender;
     MockUSDC public mockUSDC;
     MockUSDT public mockUSDT;
     MockWXTZ public mockWXTZ;
@@ -105,20 +105,20 @@ contract CaerScript is Script {
             // ** RECEIVER AND TOKEN
             helperTestnet = new HelperTestnet();
             mockUSDC = new MockUSDC(address(helperTestnet));
-            caerBridgeTokenReceiver = new CaerBridgeTokenReceiver(address(helperTestnet), address(mockUSDC));
-            console.log("address public UsdcBridgeTokenReceiver = ", address(caerBridgeTokenReceiver), ";");
+            ibranBridgeTokenReceiver = new IbranBridgeTokenReceiver(address(helperTestnet), address(mockUSDC));
+            console.log("address public UsdcBridgeTokenReceiver = ", address(ibranBridgeTokenReceiver), ";");
             mockUSDT = new MockUSDT(address(helperTestnet));
-            caerBridgeTokenReceiver = new CaerBridgeTokenReceiver(address(helperTestnet), address(mockUSDT));
-            console.log("address public UsdtBridgeTokenReceiver = ", address(caerBridgeTokenReceiver), ";");
+            ibranBridgeTokenReceiver = new IbranBridgeTokenReceiver(address(helperTestnet), address(mockUSDT));
+            console.log("address public UsdtBridgeTokenReceiver = ", address(ibranBridgeTokenReceiver), ";");
             mockWXTZ = new MockWXTZ(address(helperTestnet));
-            caerBridgeTokenReceiver = new CaerBridgeTokenReceiver(address(helperTestnet), address(mockWXTZ));
-            console.log("address public WXTZBridgeTokenReceiver = ", address(caerBridgeTokenReceiver), ";");
+            ibranBridgeTokenReceiver = new IbranBridgeTokenReceiver(address(helperTestnet), address(mockWXTZ));
+            console.log("address public WXTZBridgeTokenReceiver = ", address(ibranBridgeTokenReceiver), ";");
             mockWBTC = new MockWBTC(address(helperTestnet));
-            caerBridgeTokenReceiver = new CaerBridgeTokenReceiver(address(helperTestnet), address(mockWBTC));
-            console.log("address public BtcBridgeTokenReceiver = ", address(caerBridgeTokenReceiver), ";");
+            ibranBridgeTokenReceiver = new IbranBridgeTokenReceiver(address(helperTestnet), address(mockWBTC));
+            console.log("address public BtcBridgeTokenReceiver = ", address(ibranBridgeTokenReceiver), ";");
             mockWETH = new MockWETH(address(helperTestnet));
-            caerBridgeTokenReceiver = new CaerBridgeTokenReceiver(address(helperTestnet), address(mockWETH));
-            console.log("address public EthBridgeTokenReceiver = ", address(caerBridgeTokenReceiver), ";");
+            ibranBridgeTokenReceiver = new IbranBridgeTokenReceiver(address(helperTestnet), address(mockWETH));
+            console.log("address public EthBridgeTokenReceiver = ", address(ibranBridgeTokenReceiver), ";");
 
             // **************** SOLIDITY ****************
             console.log("************ COPY DESTINATION ADDRESS **************");
@@ -250,18 +250,18 @@ contract CaerScript is Script {
     function pairBridgeToToken(
         address _helperTestnet,
         address _mockToken,
-        address _caerBridgeTokenReceiver,
+        address _ibranBridgeTokenReceiver,
         uint32 _chainId
     ) public {
-        caerBridgeTokenSender = new CaerBridgeTokenSender(
+        ibranBridgeTokenSender = new IbranBridgeTokenSender(
             _helperTestnet,
             _mockToken,
-            _caerBridgeTokenReceiver, // ** otherchain ** RECEIVER BRIDGE
+            _ibranBridgeTokenReceiver, // ** otherchain ** RECEIVER BRIDGE
             _chainId // ** otherchain ** CHAIN ID
         );
-        ITokenSwap(_mockToken).addBridgeTokenSender(address(caerBridgeTokenSender));
+        ITokenSwap(_mockToken).addBridgeTokenSender(address(ibranBridgeTokenSender));
     }
 
     // RUN
-    // forge script CaerScript --broadcast -vvv --verify
+    // forge script IbranScript --broadcast -vvv --verify
 }

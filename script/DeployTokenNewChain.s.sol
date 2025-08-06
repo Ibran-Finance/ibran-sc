@@ -4,8 +4,8 @@ pragma solidity ^0.8.13;
 import {Script, console} from "forge-std/Script.sol";
 import {Helper} from "./Helper.sol";
 import {HelperTestnet} from "../src/HelperTestnet.sol";
-import {CaerBridgeTokenReceiver} from "../src/CaerBridgeTokenReceiver.sol";
-import {CaerBridgeTokenSender} from "../src/CaerBridgeTokenSender.sol";
+import {IbranBridgeTokenReceiver} from "../src/IbranBridgeTokenReceiver.sol";
+import {IbranBridgeTokenSender} from "../src/IbranBridgeTokenSender.sol";
 import {MockWBTC} from "../src/mocks/MockWBTC.sol";
 import {MockWETH} from "../src/mocks/MockWETH.sol";
 import {MockUSDC} from "../src/mocks/MockUSDC.sol";
@@ -14,8 +14,8 @@ import {MockWXTZ} from "../src/mocks/MockWXTZ.sol";
 
 contract DeployTokenNewChainScript is Script, Helper {
     HelperTestnet public helperTestnet;
-    CaerBridgeTokenReceiver public caerBridgeTokenReceiver;
-    CaerBridgeTokenSender public caerBridgeTokenSender;
+    IbranBridgeTokenReceiver public ibranBridgeTokenReceiver;
+    IbranBridgeTokenSender public ibranBridgeTokenSender;
     MockUSDC public mockUSDC;
     MockUSDT public mockUSDT;
     MockWXTZ public mockWXTZ;
@@ -35,20 +35,20 @@ contract DeployTokenNewChainScript is Script, Helper {
         vm.startBroadcast(privateKey);
         helperTestnet = new HelperTestnet();
         mockUSDC = new MockUSDC(address(helperTestnet));
-        caerBridgeTokenReceiver = new CaerBridgeTokenReceiver(address(helperTestnet), address(mockUSDC));
-        console.log("address public UsdcBridgeTokenReceiver = ", address(caerBridgeTokenReceiver), ";");
+        ibranBridgeTokenReceiver = new IbranBridgeTokenReceiver(address(helperTestnet), address(mockUSDC));
+        console.log("address public UsdcBridgeTokenReceiver = ", address(ibranBridgeTokenReceiver), ";");
         mockUSDT = new MockUSDT(address(helperTestnet));
-        caerBridgeTokenReceiver = new CaerBridgeTokenReceiver(address(helperTestnet), address(mockUSDT));
-        console.log("address public UsdtBridgeTokenReceiver = ", address(caerBridgeTokenReceiver), ";");
+        ibranBridgeTokenReceiver = new IbranBridgeTokenReceiver(address(helperTestnet), address(mockUSDT));
+        console.log("address public UsdtBridgeTokenReceiver = ", address(ibranBridgeTokenReceiver), ";");
         mockWXTZ = new MockWXTZ(address(helperTestnet));
-        caerBridgeTokenReceiver = new CaerBridgeTokenReceiver(address(helperTestnet), address(mockWXTZ));
-        console.log("address public WXTZBridgeTokenReceiver = ", address(caerBridgeTokenReceiver), ";");
+        ibranBridgeTokenReceiver = new IbranBridgeTokenReceiver(address(helperTestnet), address(mockWXTZ));
+        console.log("address public WXTZBridgeTokenReceiver = ", address(ibranBridgeTokenReceiver), ";");
         mockWBTC = new MockWBTC(address(helperTestnet));
-        caerBridgeTokenReceiver = new CaerBridgeTokenReceiver(address(helperTestnet), address(mockWBTC));
-        console.log("address public BtcBridgeTokenReceiver = ", address(caerBridgeTokenReceiver), ";");
+        ibranBridgeTokenReceiver = new IbranBridgeTokenReceiver(address(helperTestnet), address(mockWBTC));
+        console.log("address public BtcBridgeTokenReceiver = ", address(ibranBridgeTokenReceiver), ";");
         mockWETH = new MockWETH(address(helperTestnet));
-        caerBridgeTokenReceiver = new CaerBridgeTokenReceiver(address(helperTestnet), address(mockWETH));
-        console.log("address public EthBridgeTokenReceiver = ", address(caerBridgeTokenReceiver), ";");
+        ibranBridgeTokenReceiver = new IbranBridgeTokenReceiver(address(helperTestnet), address(mockWETH));
+        console.log("address public EthBridgeTokenReceiver = ", address(ibranBridgeTokenReceiver), ";");
 
         // **************** SOLIDITY ****************
         console.log("************ COPY DESTINATION ADDRESS **************");

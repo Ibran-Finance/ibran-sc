@@ -5,7 +5,7 @@ import {IMessageRecipient} from "@hyperlane-xyz/interfaces/IMessageRecipient.sol
 import {ITokenSwap} from "./interfaces/ITokenSwap.sol";
 import {IHelperTestnet} from "./interfaces/IHelperTestnet.sol";
 
-contract CaerBridgeTokenReceiver is IMessageRecipient {
+contract IbranBridgeTokenReceiver is IMessageRecipient {
     error MailboxNotSet();
     error NotMailbox();
 

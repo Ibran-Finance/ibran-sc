@@ -7,7 +7,7 @@ import {IERC20} from "@openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import {IHelperTestnet} from "./interfaces/IHelperTestnet.sol";
 import {ITokenSwap} from "./interfaces/ITokenSwap.sol";
 
-contract CaerBridgeTokenSender {
+contract IbranBridgeTokenSender {
     error SameChain();
     error TransferFailed();
     error MailboxNotSet();
