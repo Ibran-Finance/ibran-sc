@@ -12,6 +12,21 @@ import {MockUSDC} from "../src/mocks/MockUSDC.sol";
 import {MockUSDT} from "../src/mocks/MockUSDT.sol";
 import {MockWXTZ} from "../src/mocks/MockWXTZ.sol";
 
+/*
+██╗██████╗░██████╗░░█████╗░███╗░░██╗
+██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
+██║██████╦╝██████╔╝███████║██╔██╗██║
+██║██╔══██╗██╔══██╗██╔══██║██║╚████║
+██║██████╦╝██║░░██║██║░░██║██║░╚███║
+╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
+*/
+
+/**
+ * @title DeployTokenNewChainScript
+ * @dev Script for deploying tokens and bridge components on new chains
+ * @notice This contract handles the deployment of mock tokens and bridge receivers on destination chains
+ * @author Ibran Team
+ */
 contract DeployTokenNewChainScript is Script, Helper {
     HelperTestnet public helperTestnet;
     IbranBridgeTokenReceiver public ibranBridgeTokenReceiver;
@@ -22,6 +37,10 @@ contract DeployTokenNewChainScript is Script, Helper {
     MockWBTC public mockWBTC;
     MockWETH public mockWETH;
 
+    /**
+     * @dev Sets up the deployment environment by creating a fork of the target network
+     * @notice This function initializes the blockchain environment for deployment
+     */
     function setUp() public {
         // host chain (etherlink)
         // vm.createSelectFork(vm.rpcUrl("etherlink_testnet"));
@@ -30,6 +49,10 @@ contract DeployTokenNewChainScript is Script, Helper {
         // vm.createSelectFork(vm.rpcUrl("base_sepolia"));
     }
 
+    /**
+     * @dev Main function to deploy tokens and bridge components on new chains
+     * @notice This function deploys helper testnet, mock tokens, and bridge token receivers
+     */
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(privateKey);

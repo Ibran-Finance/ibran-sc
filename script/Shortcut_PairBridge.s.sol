@@ -3,10 +3,25 @@ pragma solidity ^0.8.20;
 
 import {Script, console} from "forge-std/Script.sol";
 
+/*
+██╗██████╗░██████╗░░█████╗░███╗░░██╗
+██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
+██║██████╦╝██████╔╝███████║██╔██╗██║
+██║██╔══██╗██╔══██╗██╔══██║██║╚████║
+██║██████╦╝██║░░██║██║░░██║██║░╚███║
+╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
+*/
+
 interface IAccountRouter {
     function enrollRemoteRouterAndIsm(uint32 _destinationDomain, bytes32 _router, bytes32 _ism) external;
 }
 
+/**
+ * @title ShortcutPairBridgeScript
+ * @dev Script for pairing bridges between different chains
+ * @notice This contract handles the enrollment of remote routers and ISMs for cross-chain communication
+ * @author Ibran Team
+ */
 contract ShortcutPairBridgeScript is Script {
     // ******* ETHERLINK_TESTNET
     address public ETHERLINK_TESTNET_MAILBOX = 0xDfaa17BF52afc5a12d06964555fAAFDADD53FF5e;
@@ -35,6 +50,10 @@ contract ShortcutPairBridgeScript is Script {
 
     uint256 public currentChainId = 421614;
 
+    /**
+     * @dev Sets up the deployment environment by creating a fork of the target network
+     * @notice This function initializes the blockchain environment for deployment
+     */
     function setUp() public {
         // source chain
         // vm.createSelectFork(vm.rpcUrl("etherlink_testnet"));
@@ -44,6 +63,10 @@ contract ShortcutPairBridgeScript is Script {
         vm.createSelectFork(vm.rpcUrl("arb_sepolia"));
     }
 
+    /**
+     * @dev Main function to pair bridges between source and destination chains
+     * @notice This function enrolls remote routers and ISMs for cross-chain communication
+     */
     function run() public payable {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
 

@@ -5,6 +5,21 @@ import {Script, console} from "forge-std/Script.sol";
 import {Helper} from "./Helper.sol";
 import {IInterchainGasPaymaster} from "@hyperlane-xyz/interfaces/IInterchainGasPaymaster.sol";
 
+/*
+██╗██████╗░██████╗░░█████╗░███╗░░██╗
+██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
+██║██████╦╝██████╔╝███████║██╔██╗██║
+██║██╔══██╗██╔══██╗██╔══██║██║╚████║
+██║██████╦╝██║░░██║██║░░██║██║░╚███║
+╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
+*/
+
+/**
+ * @title CheckGasScript
+ * @dev Script for checking gas costs for cross-chain operations
+ * @notice This contract handles gas estimation for interchain operations using Hyperlane
+ * @author Ibran Team
+ */
 contract CheckGasScript is Script, Helper {
     //     domainRoutingIsmFactory: "0x8F9CbC0b137E1edf26a41c6f9DFca77966a67b80"
     // interchainAccountRouter: "0xA0C8fB5206642Bf3693176D2369Bdd0e51271b67"
@@ -35,10 +50,18 @@ contract CheckGasScript is Script, Helper {
     //     merkleTreeHook: "0x8e1327D6aDa9Da68ddd0F2b212D52ef6166a429C"
     address public interchainGasPaymaster = 0xF2eeC8fD0eDE71006E7f423200e8615E48A73890;
 
+    /**
+     * @dev Sets up the deployment environment by creating a fork of the target network
+     * @notice This function initializes the blockchain environment for deployment
+     */
     function setUp() public {
         // vm.createSelectFork(vm.rpcUrl("base_sepolia"));
     }
 
+    /**
+     * @dev Main function to check gas costs for cross-chain operations
+     * @notice This function estimates gas costs for interchain operations using Hyperlane's gas paymaster
+     */
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(privateKey);

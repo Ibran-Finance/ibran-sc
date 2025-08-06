@@ -1,34 +1,104 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+/*
+██╗██████╗░██████╗░░█████╗░███╗░░██╗
+██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
+██║██████╦╝██████╔╝███████║██╔██╗██║
+██║██╔══██╗██╔══██╗██╔══██║██║╚████║
+██║██████╦╝██║░░██║██║░░██║██║░╚███║
+╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
+*/
+
+/**
+ * @title HelperTestnet
+ * @dev Helper contract for managing testnet chain configurations and bridge settings
+ * @notice This contract provides centralized configuration for testnet chains and bridge operations
+ * @author Ibran Team
+ * @custom:security-contact security@ibran.com
+ * @custom:version 1.0.0
+ */
 contract HelperTestnet {
+    // ============ Errors ============
+    
+    /**
+     * @dev Error thrown when a non-owner tries to perform owner-only operations
+     */
     error NotOwner();
+    
+    /**
+     * @dev Error thrown when trying to add a chain that already exists
+     */
     error ChainAlreadyExists();
+    
+    /**
+     * @dev Error thrown when trying to add a token that already exists
+     */
     error TokenAlreadyExists();
+    
+    /**
+     * @dev Error thrown when trying to access a token that doesn't exist
+     */
     error TokenNotExists();
 
+    // ============ Structs ============
+    
+    /**
+     * @dev Structure containing chain configuration information
+     * @param mailbox Address of the Hyperlane mailbox contract
+     * @param gasMaster Address of the gas master contract
+     * @param domainId Domain ID for the chain
+     */
     struct ChainInfo {
         address mailbox;
         address gasMaster;
         uint32 domainId;
     }
 
+    // ============ State Variables ============
+    
+    /**
+     * @dev Mapping from chain ID to chain configuration
+     */
     mapping(uint256 => ChainInfo) public chains;
+    
+    /**
+     * @dev Mapping from chain ID to receiver bridge address
+     */
     mapping(uint256 => address) public receiverBridge;
 
+    /**
+     * @dev Address of the contract owner
+     */
     address public owner;
 
+    /**
+     * @dev Current chain ID
+     */
     uint256 public chainId;
 
+    // ============ Modifiers ============
+    
+    /**
+     * @dev Modifier to restrict access to owner only
+     */
     modifier onlyOwner() {
         _onlyOwner();
         _;
     }
 
+    /**
+     * @dev Internal function to check if caller is owner
+     * @notice Reverts if caller is not the owner
+     */
     function _onlyOwner() internal view {
         if (msg.sender != owner) revert NotOwner();
     }
 
+    /**
+     * @dev Constructor for the HelperTestnet contract
+     * @notice Initializes the contract with owner and pre-configures testnet chains
+     */
     constructor() {
         owner = msg.sender;
         chainId = block.chainid;
@@ -98,91 +168,37 @@ contract HelperTestnet {
 
         // MEGAETH
         chains[6342] =
-            ChainInfo(0xF78deCe5Cf97e1bd61C202A5ba1af33b87454878, 0x638A831b4d11Be6a72AcB97d1aE79DA05Ae9B1D3, 6342);
+            ChainInfo(0xDDcFEcF17586D08A5740B7D91735fcCE3dfe3eeD, 0x867f2089D09903f208AeCac84E599B90E5a4A821, 6342);
 
-        // MODE
-        chains[919] =
-            ChainInfo(0x589C201a07c26b4725A4A829d772f24423da480B, 0xB261C52241E133f957630AeeFEd48a82963AC33e, 919);
-
-        // MONAD
-        chains[10143] =
-            ChainInfo(0x589C201a07c26b4725A4A829d772f24423da480B, 0x8584590ad637C61C7cDF72eFF3381Ee1c3D1bC8E, 10143);
-
-        // NEURA
-        chains[267] =
-            ChainInfo(0x589C201a07c26b4725A4A829d772f24423da480B, 0xFb55597F07417b08195Ba674f4dd58aeC9B89FBB, 267);
-
-        // ODYSSEY
-        chains[911867] =
-            ChainInfo(0xDDcFEcF17586D08A5740B7D91735fcCE3dfe3eeD, 0xD356C996277eFb7f75Ee8bd61b31cC781A12F54f, 911867);
-
-        // OPTIMISM_SEPOLIA
-        chains[11155420] =
-            ChainInfo(0x6966b0E55883d49BFB24539356a2f8A673E02039, 0x28B02B97a850872C4D33C3E024fab6499ad96564, 11155420);
-
-        // PLUME
-        chains[98867] =
-            ChainInfo(0xDDcFEcF17586D08A5740B7D91735fcCE3dfe3eeD, 0xD5B70f7Da85F98A5197E55114A38f3eDcDCf020e, 98867);
-
-        // POLYGON_AMOY
-        chains[80002] =
-            ChainInfo(0x54148470292C24345fb828B003461a9444414517, 0x6c13643B3927C57DB92c790E4E3E7Ee81e13f78C, 80002);
-
-        // ROME
-        chains[200018] =
-            ChainInfo(0x0b9A4A46f50f91f353B8Aa0F3Ca80E35E253bDd8, 0xe65785c058559bA6D133d1ba1Becac0CBc8aE248, 200018);
-
-        // SCROLL_SEPOLIA
-        chains[534351] =
-            ChainInfo(0x3C5154a193D6e2955650f9305c8d80c18C814A68, 0x86fb9F1c124fB20ff130C41a79a432F770f67AFD, 534351);
-
-        // SEPOLIA
-        chains[11155111] =
-            ChainInfo(0xfFAEF09B3cd11D9b20d1a19bECca54EEC2884766, 0x6f2756380FD49228ae25Aa7F2817993cB74Ecc56, 11155111);
-
-        // SOMNIA
-        chains[50312] =
-            ChainInfo(0x7d498740A4572f2B5c6b0A1Ba9d1d9DbE207e89E, 0x919Af376D02751bFCaD9CBAD6bad0c3089dAE33f, 50312);
-
-        // SONEIUM
-        chains[1946] =
-            ChainInfo(0xDDcFEcF17586D08A5740B7D91735fcCE3dfe3eeD, 0xA2cf52064c921C11adCd83588CbEa08cc3bfF5d8, 1946);
-
-        // SONIC_BLAZE
-        chains[57054] =
-            ChainInfo(0x589C201a07c26b4725A4A829d772f24423da480B, 0x39c85C84876479694A2470c0E8075e9d68049aFc, 57054);
-
-        // SONIC
-        chains[64165] =
-            ChainInfo(0xDDcFEcF17586D08A5740B7D91735fcCE3dfe3eeD, 0xa3AB7E6cE24E6293bD5320A53329Ef2f4DE73fCA, 64165);
-
-        // SUAVE_TOLIMAN
-        chains[33626250] =
-            ChainInfo(0xDDcFEcF17586D08A5740B7D91735fcCE3dfe3eeD, 0xA2cf52064c921C11adCd83588CbEa08cc3bfF5d8, 33626250);
-
-        // SUBTENSOR
-        chains[945] =
-            ChainInfo(0x589C201a07c26b4725A4A829d772f24423da480B, 0xB589407cf6bEA5CD81AD0946b9F1467933ede74c, 945);
-
-        // SUPERPOSITION
-        chains[98985] =
-            ChainInfo(0x6966b0E55883d49BFB24539356a2f8A673E02039, 0xeC7eb4196Bd601DEa7585A744FbFB4CF11278450, 98985);
-
-        // UNICHAIN
-        chains[1301] =
-            ChainInfo(0xDDcFEcF17586D08A5740B7D91735fcCE3dfe3eeD, 0xa3AB7E6cE24E6293bD5320A53329Ef2f4DE73fCA, 1301);
-
-        // LOAD
-        chains[9496] =
-            ChainInfo(0x589C201a07c26b4725A4A829d772f24423da480B, 0x8584590ad637C61C7cDF72eFF3381Ee1c3D1bC8E, 9496);
+        // ETHERLINK_TESTNET
+        chains[128123] =
+            ChainInfo(0xDDcFEcF17586D08A5740B7D91735fcCE3dfe3eeD, 0x867f2089D09903f208AeCac84E599B90E5a4A821, 128123);
     }
 
-    function addChain(address _mailbox, address _gasMaster, uint32 _domainId, uint256 _chainId) public onlyOwner {
+    // ============ Public Functions ============
+    
+    /**
+     * @dev Adds a new chain configuration
+     * @param _mailbox Address of the mailbox contract
+     * @param _gasMaster Address of the gas master contract
+     * @param _domainId Domain ID for the chain
+     * @param _chainId Chain ID to add
+     * @notice This function allows the owner to add new chain configurations
+     * @custom:security Only the owner can add new chains
+     */
+    function addChain(address _mailbox, address _gasMaster, uint32 _domainId, uint256 _chainId) external onlyOwner {
         if (chains[_chainId].mailbox != address(0)) revert ChainAlreadyExists();
         chains[_chainId] = ChainInfo(_mailbox, _gasMaster, _domainId);
     }
 
-    function addReceiverBridge(uint256 _chainId, address _receiverBridge) public onlyOwner {
+    /**
+     * @dev Adds a receiver bridge for a specific chain
+     * @param _chainId Chain ID for the bridge
+     * @param _receiverBridge Address of the receiver bridge contract
+     * @notice This function allows the owner to add receiver bridge configurations
+     * @custom:security Only the owner can add receiver bridges
+     */
+    function addReceiverBridge(uint256 _chainId, address _receiverBridge) external onlyOwner {
         receiverBridge[_chainId] = _receiverBridge;
     }
 }

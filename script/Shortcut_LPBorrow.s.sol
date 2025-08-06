@@ -10,6 +10,21 @@ import {ILendingPool} from "../src/interfaces/ILendingPool.sol";
 import {IHelperTestnet} from "../src/interfaces/IHelperTestnet.sol";
 import {IFactory} from "../src/interfaces/IFactory.sol";
 
+/*
+██╗██████╗░██████╗░░█████╗░███╗░░██╗
+██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
+██║██████╦╝██████╔╝███████║██╔██╗██║
+██║██╔══██╗██╔══██╗██╔══██║██║╚████║
+██║██████╦╝██║░░██║██║░░██║██║░╚███║
+╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
+*/
+
+/**
+ * @title LPBorrowScript
+ * @dev Script for borrowing debt from lending pools
+ * @notice This contract handles borrowing operations from lending pools with cross-chain support
+ * @author Ibran Team
+ */
 contract LPBorrowScript is Script, Helper {
     // --------- FILL THIS ----------
     address public yourWallet = vm.envAddress("ADDRESS");
@@ -19,6 +34,10 @@ contract LPBorrowScript is Script, Helper {
     // uint256 public chainId = 128123;
     // ----------------------------
 
+    /**
+     * @dev Sets up the deployment environment by creating a fork of the target network
+     * @notice This function initializes the blockchain environment for deployment
+     */
     function setUp() public {
         // ***************** HOST CHAIN *****************
         vm.createSelectFork(vm.rpcUrl("etherlink_testnet"));
@@ -33,6 +52,10 @@ contract LPBorrowScript is Script, Helper {
         // vm.createSelectFork(vm.rpcUrl("op_sepolia"));
     }
 
+    /**
+     * @dev Main function to borrow debt from the lending pool
+     * @notice This function handles the borrowing process with cross-chain gas payment
+     */
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         address borrowToken = ILendingPool(ORIGIN_lendingPool).borrowToken();

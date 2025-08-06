@@ -6,6 +6,21 @@ import {ILendingPool} from "../src/interfaces/ILendingPool.sol";
 import {Helper} from "./Helper.sol";
 import {IERC20} from "@openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 
+/*
+██╗██████╗░██████╗░░█████╗░███╗░░██╗
+██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
+██║██████╦╝██████╔╝███████║██╔██╗██║
+██║██╔══██╗██╔══██╗██╔══██║██║╚████║
+██║██████╦╝██║░░██║██║░░██║██║░╚███║
+╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
+*/
+
+/**
+ * @title Shortcut_SwapCollateral
+ * @dev Script for swapping collateral tokens in lending pools
+ * @notice This contract handles collateral token swaps within user positions
+ * @author Ibran Team
+ */
 contract Shortcut_SwapCollateral is Script, Helper {
     // --------- FILL THIS ----------
     address public yourWallet = vm.envAddress("ADDRESS");
@@ -14,6 +29,10 @@ contract Shortcut_SwapCollateral is Script, Helper {
     address public tokenOut = ORIGIN_USDC;
     // ----------------------------
 
+    /**
+     * @dev Sets up the deployment environment by creating a fork of the target network
+     * @notice This function initializes the blockchain environment for deployment
+     */
     function setUp() public {
         // ***************** HOST CHAIN *****************
         vm.createSelectFork(vm.rpcUrl("etherlink_testnet"));
@@ -28,6 +47,10 @@ contract Shortcut_SwapCollateral is Script, Helper {
         // vm.createSelectFork(vm.rpcUrl("op_sepolia"));
     }
 
+    /**
+     * @dev Main function to swap collateral tokens within user position
+     * @notice This function handles the collateral swap process within the user's lending pool position
+     */
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         address userPosition = ILendingPool(ORIGIN_lendingPool).addressPositions(yourWallet);

@@ -7,12 +7,31 @@ import {IERC20Metadata} from "@openzeppelin-contracts/contracts/token/ERC20/exte
 import {Helper} from "./Helper.sol";
 import {ILendingPool} from "../src/interfaces/ILendingPool.sol";
 
+/*
+██╗██████╗░██████╗░░█████╗░███╗░░██╗
+██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
+██║██████╦╝██████╔╝███████║██╔██╗██║
+██║██╔══██╗██╔══██╗██╔══██║██║╚████║
+██║██████╦╝██║░░██║██║░░██║██║░╚███║
+╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
+*/
+
+/**
+ * @title LPRepayScript
+ * @dev Script for repaying debt to lending pools
+ * @notice This contract handles debt repayment operations for lending pools
+ * @author Ibran Team
+ */
 contract LPRepayScript is Script, Helper {
     // --------- FILL THIS ----------
     address public yourWallet = vm.envAddress("ADDRESS");
     uint256 public amount = 1;
     // ----------------------------
 
+    /**
+     * @dev Sets up the deployment environment by creating a fork of the target network
+     * @notice This function initializes the blockchain environment for deployment
+     */
     function setUp() public {
         // ***************** HOST CHAIN *****************
         vm.createSelectFork(vm.rpcUrl("etherlink_testnet"));
@@ -21,6 +40,10 @@ contract LPRepayScript is Script, Helper {
         // vm.createSelectFork(vm.rpcUrl("avalanche_fuji"));
     }
 
+    /**
+     * @dev Main function to repay debt to the lending pool
+     * @notice This function handles the debt repayment process using selected tokens
+     */
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         address borrowToken = ILendingPool(ORIGIN_lendingPool).borrowToken();

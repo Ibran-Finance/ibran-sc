@@ -3,6 +3,21 @@ pragma solidity ^0.8.13;
 
 import {Script} from "forge-std/Script.sol";
 
+/*
+██╗██████╗░██████╗░░█████╗░███╗░░██╗
+██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
+██║██████╦╝██████╔╝███████║██╔██╗██║
+██║██╔══██╗██╔══██╗██╔══██║██║╚████║
+██║██████╦╝██║░░██║██║░░██║██║░╚███║
+╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
+*/
+
+/**
+ * @title Helper
+ * @dev Helper contract containing addresses and configuration for the Ibran protocol
+ * @notice This contract provides centralized address management for tokens, contracts, and chain configurations
+ * @author Ibran Team
+ */
 contract Helper is Script {
     address public AVAX_USDC = 0xC014F158EbADce5a8e31f634c0eb062Ce8CDaeFe;
     address public AVAX_USDT = 0x1E713E704336094585c3e8228d5A8d82684e4Fb0;

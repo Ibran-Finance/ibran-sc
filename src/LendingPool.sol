@@ -13,6 +13,15 @@ import {ITokenSwap} from "./interfaces/ITokenSwap.sol";
 import {IIbranBridgeTokenSender} from "./interfaces/IIbranBridgeTokenSender.sol";
 import {IHelperTestnet} from "./interfaces/IHelperTestnet.sol";
 
+/*
+██╗██████╗░██████╗░░█████╗░███╗░░██╗
+██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
+██║██████╦╝██████╔╝███████║██╔██╗██║
+██║██╔══██╗██╔══██╗██╔══██║██║╚████║
+██║██████╦╝██║░░██║██║░░██║██║░╚███║
+╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
+*/
+
 contract LendingPool is ReentrancyGuard {
     using SafeERC20 for IERC20;
 
@@ -68,15 +77,6 @@ contract LendingPool is ReentrancyGuard {
             createPosition();
         }
     }
-
-    /**
-     *
-     *  ___ ____  ____      _    _   _
-     * |_ _| __ )|  _ \    / \  | \ | |
-     *  | ||  _ \| |_) |  / _ \ |  \| |
-     *  | || |_) |  _ <  / ___ \| |\  |
-     * |___|____/|_| \_\/_/   \_\_| \_|
-     */
 
     /**
      * @notice Creates a new Position contract for the caller if one does not already exist.

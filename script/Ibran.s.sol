@@ -19,6 +19,21 @@ import {LendingPool} from "../src/LendingPool.sol";
 import {Position} from "../src/Position.sol";
 import {Pricefeed} from "../src/Pricefeed.sol";
 
+/*
+██╗██████╗░██████╗░░█████╗░███╗░░██╗
+██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
+██║██████╦╝██████╔╝███████║██╔██╗██║
+██║██╔══██╗██╔══██╗██╔══██║██║╚████║
+██║██████╦╝██║░░██║██║░░██║██║░╚███║
+╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
+*/
+
+/**
+ * @title IbranScript
+ * @dev Main deployment script for the Ibran protocol
+ * @notice This contract handles the deployment and configuration of all Ibran protocol components
+ * @author Ibran Team
+ */
 contract IbranScript is Script {
     HelperTestnet public helperTestnet;
     IbranBridgeTokenReceiver public ibranBridgeTokenReceiver;
@@ -90,6 +105,10 @@ contract IbranScript is Script {
     uint32 public DESTINATION_chainId = 84532;
     // uint32 public DESTINATION_chainId = 421614;
 
+    /**
+     * @dev Sets up the deployment environment by creating a fork of the target network
+     * @notice This function initializes the blockchain environment for deployment
+     */
     function setUp() public {
         // host chain (etherlink)
         vm.createSelectFork(vm.rpcUrl("etherlink_testnet"));
@@ -98,6 +117,10 @@ contract IbranScript is Script {
         // vm.createSelectFork(vm.rpcUrl("base_sepolia"));
     }
 
+    /**
+     * @dev Main deployment function that handles the deployment of all protocol components
+     * @notice This function deploys tokens, bridge contracts, and protocol components based on the target chain
+     */
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(privateKey);
@@ -209,6 +232,10 @@ contract IbranScript is Script {
         vm.stopBroadcast();
     }
 
+    /**
+     * @dev Deploys mock tokens and pairs them with bridge token receivers
+     * @notice This function creates mock tokens and establishes bridge connections
+     */
     function deployMockToken() public {
         if (UsdcBridgeTokenReceiver == address(0)) revert("UsdcBridgeTokenReceiver is not set");
         mockUSDC = new MockUSDC(address(helperTestnet));
@@ -247,6 +274,14 @@ contract IbranScript is Script {
         console.log("export const ORIGIN_mockWETH = ", address(mockWETH), ";");
     }
 
+    /**
+     * @dev Pairs a bridge token sender with a token and receiver
+     * @param _helperTestnet Address of the helper testnet contract
+     * @param _mockToken Address of the mock token to be bridged
+     * @param _ibranBridgeTokenReceiver Address of the bridge token receiver on the destination chain
+     * @param _chainId Chain ID of the destination chain
+     * @notice This function creates a bridge token sender and adds it to the token's bridge system
+     */
     function pairBridgeToToken(
         address _helperTestnet,
         address _mockToken,

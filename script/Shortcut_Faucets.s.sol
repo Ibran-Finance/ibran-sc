@@ -6,12 +6,31 @@ import {IERC20Metadata} from "@openzeppelin-contracts/contracts/token/ERC20/exte
 import {Helper} from "./Helper.sol";
 import {ITokenSwap} from "../src/interfaces/ITokenSwap.sol";
 
+/*
+██╗██████╗░██████╗░░█████╗░███╗░░██╗
+██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
+██║██████╦╝██████╔╝███████║██╔██╗██║
+██║██╔══██╗██╔══██╗██╔══██║██║╚████║
+██║██████╦╝██║░░██║██║░░██║██║░╚███║
+╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
+*/
+
+/**
+ * @title FaucetsScript
+ * @dev Script for minting tokens through faucets for testing purposes
+ * @notice This contract handles token minting for various test networks
+ * @author Ibran Team
+ */
 contract FaucetsScript is Script, Helper {
     // ------- FILL THIS ----------
     address public claimToken = ORIGIN_USDC;
     uint256 public amount = 10_000;
     // ----------------------------
 
+    /**
+     * @dev Sets up the deployment environment by creating a fork of the target network
+     * @notice This function initializes the blockchain environment for deployment
+     */
     function setUp() public {
         // ***************** HOST CHAIN *****************
         vm.createSelectFork(vm.rpcUrl("etherlink_testnet"));
@@ -27,6 +46,10 @@ contract FaucetsScript is Script, Helper {
         // vm.createSelectFork(vm.rpcUrl("op_sepolia"));
     }
 
+    /**
+     * @dev Main function to mint tokens through the faucet
+     * @notice This function mints the specified amount of tokens to the claim address
+     */
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         uint256 decimal = IERC20Metadata(claimToken).decimals();

@@ -7,12 +7,31 @@ import {IERC20} from "@openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import {Helper} from "./Helper.sol";
 import {ILendingPool} from "../src/interfaces/ILendingPool.sol";
 
+/*
+██╗██████╗░██████╗░░█████╗░███╗░░██╗
+██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
+██║██████╦╝██████╔╝███████║██╔██╗██║
+██║██╔══██╗██╔══██╗██╔══██║██║╚████║
+██║██████╦╝██║░░██║██║░░██║██║░╚███║
+╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
+*/
+
+/**
+ * @title LPSupplyCollateralScript
+ * @dev Script for supplying collateral to lending pools
+ * @notice This contract handles collateral supply operations for lending pools
+ * @author Ibran Team
+ */
 contract LPSupplyCollateralScript is Script, Helper {
     // --------- FILL THIS ----------
     address public yourWallet = vm.envAddress("ADDRESS");
     uint256 public amount = 2;
     // ----------------------------
 
+    /**
+     * @dev Sets up the deployment environment by creating a fork of the target network
+     * @notice This function initializes the blockchain environment for deployment
+     */
     function setUp() public {
         // ***************** HOST CHAIN *****************
         vm.createSelectFork(vm.rpcUrl("etherlink_testnet"));
@@ -27,7 +46,10 @@ contract LPSupplyCollateralScript is Script, Helper {
         // vm.createSelectFork(vm.rpcUrl("op_sepolia"));
     }
 
-    // Make sure you have enough collateral in the wallet
+    /**
+     * @dev Main function to supply collateral to the lending pool
+     * @notice This function handles the collateral supply process, ensuring sufficient balance
+     */
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         address collateralToken = ILendingPool(ORIGIN_lendingPool).collateralToken();

@@ -5,13 +5,36 @@ import {Script} from "forge-std/Script.sol";
 import {Helper} from "./Helper.sol";
 import {ITokenSwap} from "../src/interfaces/ITokenSwap.sol";
 
+/*
+██╗██████╗░██████╗░░█████╗░███╗░░██╗
+██║██╔══██╗██╔══██╗██╔══██╗████╗░██║
+██║██████╦╝██████╔╝███████║██╔██╗██║
+██║██╔══██╗██╔══██╗██╔══██║██║╚████║
+██║██████╦╝██║░░██║██║░░██║██║░╚███║
+╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
+*/
+
+/**
+ * @title MockTokenGrantBurnMint
+ * @dev Script for granting mint and burn roles to bridge token senders
+ * @notice This contract handles the granting of mint and burn permissions for cross-chain token operations
+ * @author Ibran Team
+ */
 contract MockTokenGrantBurnMint is Script, Helper {
+    /**
+     * @dev Sets up the deployment environment by creating a fork of the target network
+     * @notice This function initializes the blockchain environment for deployment
+     */
     function setUp() public {
         // host chain
         vm.createSelectFork(vm.rpcUrl("arb_sepolia"));
         // vm.createSelectFork(vm.rpcUrl("base_sepolia"));
     }
 
+    /**
+     * @dev Main function to grant mint and burn roles to bridge token senders
+     * @notice This function grants mint and burn permissions to all bridge token senders for cross-chain operations
+     */
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(privateKey);
