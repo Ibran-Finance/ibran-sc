@@ -20,29 +20,29 @@ pragma solidity ^0.8.20;
  */
 contract HelperTestnet {
     // ============ Errors ============
-    
+
     /**
      * @dev Error thrown when a non-owner tries to perform owner-only operations
      */
     error NotOwner();
-    
+
     /**
      * @dev Error thrown when trying to add a chain that already exists
      */
     error ChainAlreadyExists();
-    
+
     /**
      * @dev Error thrown when trying to add a token that already exists
      */
     error TokenAlreadyExists();
-    
+
     /**
      * @dev Error thrown when trying to access a token that doesn't exist
      */
     error TokenNotExists();
 
     // ============ Structs ============
-    
+
     /**
      * @dev Structure containing chain configuration information
      * @param mailbox Address of the Hyperlane mailbox contract
@@ -56,12 +56,12 @@ contract HelperTestnet {
     }
 
     // ============ State Variables ============
-    
+
     /**
      * @dev Mapping from chain ID to chain configuration
      */
     mapping(uint256 => ChainInfo) public chains;
-    
+
     /**
      * @dev Mapping from chain ID to receiver bridge address
      */
@@ -78,7 +78,7 @@ contract HelperTestnet {
     uint256 public chainId;
 
     // ============ Modifiers ============
-    
+
     /**
      * @dev Modifier to restrict access to owner only
      */
@@ -116,11 +116,11 @@ contract HelperTestnet {
 
         // ARBITRUM_SEPOLIA
         chains[421614] =
-            ChainInfo(0x598facE78a4302f11E3de0bee1894Da0b2Cb71F8, 0xc756cFc1b7d0d4646589EDf10eD54b201237F5e8, 421614);
+            ChainInfo(0x2E6EfE9E2D8ef396007e9B7A3e47Aa284fCbE211, 0x63a020ee567c88adBA3b34f8837575E58d087a35, 421614);
 
         // BASE_SEPOLIA
         chains[84532] =
-            ChainInfo(0x6966b0E55883d49BFB24539356a2f8A673E02039, 0x28B02B97a850872C4D33C3E024fab6499ad96564, 84532);
+            ChainInfo(0xFBD43c6039f8EB2eE6C2Cc3CD2DAAE985E564508, 0xff0A4f733B2cF5f8C7869e42f3D92f54226BdE0A, 84532);
 
         // BSC_TESTNET
         chains[97] =
@@ -173,10 +173,14 @@ contract HelperTestnet {
         // ETHERLINK_TESTNET
         chains[128123] =
             ChainInfo(0xDDcFEcF17586D08A5740B7D91735fcCE3dfe3eeD, 0x867f2089D09903f208AeCac84E599B90E5a4A821, 128123);
+
+        // CORE TESTNET
+        chains[1114] =
+            ChainInfo(0xd5b993dB69c2263086C88870b47eec787b5427B8, 0x4eAD9ce51e740277ac070ec84914dE614D20036c, 1114);
     }
 
     // ============ Public Functions ============
-    
+
     /**
      * @dev Adds a new chain configuration
      * @param _mailbox Address of the mailbox contract
@@ -187,7 +191,6 @@ contract HelperTestnet {
      * @custom:security Only the owner can add new chains
      */
     function addChain(address _mailbox, address _gasMaster, uint32 _domainId, uint256 _chainId) external onlyOwner {
-        if (chains[_chainId].mailbox != address(0)) revert ChainAlreadyExists();
         chains[_chainId] = ChainInfo(_mailbox, _gasMaster, _domainId);
     }
 

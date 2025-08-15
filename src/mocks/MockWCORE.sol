@@ -14,14 +14,14 @@ import {ERC20} from "@openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 */
 
 /**
- * @title MockWXTZ
- * @dev Mock WXTZ token contract for testing purposes
- * @notice This contract simulates WXTZ token functionality with 18 decimals and bridge capabilities
+ * @title MockWCORE
+ * @dev Mock WCORE token contract for testing purposes
+ * @notice This contract simulates WCORE token functionality with 18 decimals and bridge capabilities
  * @author Ibran Team
  * @custom:security-contact security@ibran.com
  * @custom:version 1.0.0
  */
-contract MockWXTZ is ERC20 {
+contract MockWCORE is ERC20 {
     // ============ Errors ============
     
     /**
@@ -61,11 +61,11 @@ contract MockWXTZ is ERC20 {
     event BridgeTokenSenderAdded(address indexed bridgeTokenSender, uint256 indexed chainId);
 
     /**
-     * @dev Constructor for the MockWXTZ contract
+     * @dev Constructor for the MockWCORE contract
      * @param _helperTestnet Address of the helper testnet contract
-     * @notice Initializes the mock WXTZ token with 18 decimals
+     * @notice Initializes the mock WCORE token with 18 decimals
      */
-    constructor(address _helperTestnet) ERC20("Wrapped Tezos", "WXTZ") {
+    constructor(address _helperTestnet) ERC20("Wrapped Core", "WCORE") {
         helperTestnet = _helperTestnet;
         owner = msg.sender;
     }
@@ -91,7 +91,7 @@ contract MockWXTZ is ERC20 {
     // ============ Public Functions ============
     
     /**
-     * @dev Mints new WXTZ tokens to a specified address
+     * @dev Mints new WCORE tokens to a specified address
      * @param to Address to receive the minted tokens
      * @param amount Amount of tokens to mint
      * @notice This function is for hackathon purposes and allows anyone to mint
@@ -111,7 +111,7 @@ contract MockWXTZ is ERC20 {
     }
 
     /**
-     * @dev Mints mock WXTZ tokens for testing purposes
+     * @dev Mints mock WCORE tokens for testing purposes
      * @param to Address to receive the minted tokens
      * @param amount Amount of tokens to mint
      * @notice This function is specifically for testing and development
@@ -122,7 +122,7 @@ contract MockWXTZ is ERC20 {
     }
 
     /**
-     * @dev Burns mock WXTZ tokens for testing purposes
+     * @dev Burns mock WCORE tokens for testing purposes
      * @param amount Amount of tokens to burn
      * @notice This function is specifically for testing and development
      * @custom:security This function should only be available in test environments
@@ -132,9 +132,9 @@ contract MockWXTZ is ERC20 {
     }
 
     /**
-     * @dev Returns the number of decimals for WXTZ
-     * @return The number of decimal places (18 for WXTZ)
-     * @notice WXTZ uses 18 decimals like most ERC20 tokens
+     * @dev Returns the number of decimals for WCORE
+     * @return The number of decimal places (18 for WCORE)
+     * @notice WCORE uses 18 decimals like most ERC20 tokens
      */
     function decimals() public pure override returns (uint8) {
         return 18;

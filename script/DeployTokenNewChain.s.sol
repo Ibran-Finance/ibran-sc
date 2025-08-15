@@ -10,7 +10,7 @@ import {MockWBTC} from "../src/mocks/MockWBTC.sol";
 import {MockWETH} from "../src/mocks/MockWETH.sol";
 import {MockUSDC} from "../src/mocks/MockUSDC.sol";
 import {MockUSDT} from "../src/mocks/MockUSDT.sol";
-import {MockWXTZ} from "../src/mocks/MockWXTZ.sol";
+import {MockWCORE} from "../src/mocks/MockWCORE.sol";
 
 /*
 ██╗██████╗░██████╗░░█████╗░███╗░░██╗
@@ -33,7 +33,7 @@ contract DeployTokenNewChainScript is Script, Helper {
     IbranBridgeTokenSender public ibranBridgeTokenSender;
     MockUSDC public mockUSDC;
     MockUSDT public mockUSDT;
-    MockWXTZ public mockWXTZ;
+    MockWCORE public mockWCORE;
     MockWBTC public mockWBTC;
     MockWETH public mockWETH;
 
@@ -63,9 +63,9 @@ contract DeployTokenNewChainScript is Script, Helper {
         mockUSDT = new MockUSDT(address(helperTestnet));
         ibranBridgeTokenReceiver = new IbranBridgeTokenReceiver(address(helperTestnet), address(mockUSDT));
         console.log("address public UsdtBridgeTokenReceiver = ", address(ibranBridgeTokenReceiver), ";");
-        mockWXTZ = new MockWXTZ(address(helperTestnet));
-        ibranBridgeTokenReceiver = new IbranBridgeTokenReceiver(address(helperTestnet), address(mockWXTZ));
-        console.log("address public WXTZBridgeTokenReceiver = ", address(ibranBridgeTokenReceiver), ";");
+        mockWCORE = new MockWCORE(address(helperTestnet));
+        ibranBridgeTokenReceiver = new IbranBridgeTokenReceiver(address(helperTestnet), address(mockWCORE));
+        console.log("address public WCOREBridgeTokenReceiver = ", address(ibranBridgeTokenReceiver), ";");
         mockWBTC = new MockWBTC(address(helperTestnet));
         ibranBridgeTokenReceiver = new IbranBridgeTokenReceiver(address(helperTestnet), address(mockWBTC));
         console.log("address public BtcBridgeTokenReceiver = ", address(ibranBridgeTokenReceiver), ";");
@@ -78,7 +78,7 @@ contract DeployTokenNewChainScript is Script, Helper {
         console.log("address public DESTINATION_helperTestnet = ", address(helperTestnet), ";");
         console.log("address public DESTINATION_mockUSDC = ", address(mockUSDC), ";");
         console.log("address public DESTINATION_mockUSDT = ", address(mockUSDT), ";");
-        console.log("address public DESTINATION_mockWXTZ = ", address(mockWXTZ), ";");
+        console.log("address public DESTINATION_mockWCORE = ", address(mockWCORE), ";");
         console.log("address public DESTINATION_mockWBTC = ", address(mockWBTC), ";");
         console.log("address public DESTINATION_mockWETH = ", address(mockWETH), ";");
         // **************** JAVASCRIPT ****************
@@ -87,7 +87,7 @@ contract DeployTokenNewChainScript is Script, Helper {
         console.log("export const DESTINATION_mockWETH = ", address(mockWETH), ";");
         console.log("export const DESTINATION_mockUSDC = ", address(mockUSDC), ";");
         console.log("export const DESTINATION_mockUSDT = ", address(mockUSDT), ";");
-        console.log("export const DESTINATION_mockWXTZ = ", address(mockWXTZ), ";");
+        console.log("export const DESTINATION_mockWCORE = ", address(mockWCORE), ";");
         console.log("export const DESTINATION_mockWBTC = ", address(mockWBTC), ";");
         vm.stopBroadcast();
     }

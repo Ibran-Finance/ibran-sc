@@ -12,6 +12,10 @@ import {Ownable} from "@openzeppelin-contracts/contracts/access/Ownable.sol";
 ╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
 */
 
+interface IApi3ReaderProxy {
+    function read() external view returns (int224 value, uint32 timestamp);
+}
+
 /**
  * @title Pricefeed
  * @dev Mock price feed contract for testing purposes
@@ -20,39 +24,39 @@ import {Ownable} from "@openzeppelin-contracts/contracts/access/Ownable.sol";
  * @custom:security-contact security@ibran.com
  * @custom:version 1.0.0
  */
-contract Pricefeed is Ownable {
+contract Oracle is Ownable {
     // ============ State Variables ============
-    
+
     /**
-     * @dev Address of the token this price feed tracks
+     * @dev Address of the oracle this price feed tracks
      */
-    address public token;
-    
+    address public oracle;
+
     /**
      * @dev Current round ID for the price feed
      */
     uint80 public roundId;
-    
+
     /**
-     * @dev Current price of the token
+     * @dev Current price of the oracle
      */
     uint256 public price;
-    
+
     /**
      * @dev Timestamp when the current round started
      */
     uint256 public startedAt;
-    
+
     /**
      * @dev Timestamp when the price was last updated
      */
     uint256 public updatedAt;
-    
+
     /**
      * @dev Round ID in which the answer was computed
      */
     uint80 public answeredInRound;
-    
+
     /**
      * @dev Number of decimal places for the price
      */
@@ -60,25 +64,15 @@ contract Pricefeed is Ownable {
 
     /**
      * @dev Constructor for the Pricefeed contract
-     * @param _token Address of the token to track
-     * @notice Initializes the price feed with the specified token
+     * @param _oracle Address of the oracle to track
+     * @notice Initializes the price feed with the specified oracle
      */
-    constructor(address _token) Ownable(msg.sender) {
-        token = _token;
+    constructor(address _oracle) Ownable(msg.sender) {
+        oracle = _oracle;
     }
 
-    /**
-     * @dev Sets the price for the token
-     * @param _price The new price to set
-     * @notice This function allows the owner to update the token price
-     * @custom:security Only the owner can set prices
-     */
-    function setPrice(uint256 _price) public onlyOwner {
-        roundId = 1;
-        price = _price;
-        startedAt = block.timestamp;
-        updatedAt = block.timestamp;
-        answeredInRound = 1;
+    function setOracle(address _oracle) public onlyOwner {
+        oracle = _oracle;
     }
 
     /**
@@ -91,6 +85,7 @@ contract Pricefeed is Ownable {
      * @notice This function mimics Chainlink's latestRoundData interface
      */
     function latestRoundData() public view returns (uint80, uint256, uint256, uint256, uint80) {
-        return (roundId, price, startedAt, updatedAt, answeredInRound);
+        (int224 value, uint32 timestamp) = IApi3ReaderProxy(oracle).read();
+        return (roundId, uint256(uint224(value)), startedAt, uint256(timestamp), answeredInRound);
     }
 }

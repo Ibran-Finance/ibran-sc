@@ -11,7 +11,7 @@ import {MockUSDC} from "../src/mocks/MockUSDC.sol";
 import {MockUSDT} from "../src/mocks/MockUSDT.sol";
 import {MockWBTC} from "../src/mocks/MockWBTC.sol";
 import {MockWETH} from "../src/mocks/MockWETH.sol";
-import {MockWXTZ} from "../src/mocks/MockWXTZ.sol";
+import {MockWCORE} from "../src/mocks/MockWCORE.sol";
 import {HelperTestnet} from "../src/HelperTestnet.sol";
 import {IsHealthy} from "../src/IsHealthy.sol";
 import {Protocol} from "../src/Protocol.sol";
@@ -82,9 +82,9 @@ contract LendingPoolFactoryHyperlaneTest is Test {
     MockUSDT public usdt;
     
     /**
-     * @dev Mock WXTZ token contract
+     * @dev Mock WCORE token contract
      */
-    MockWXTZ public wxtz;
+    MockWCORE public wcORE;
     
     /**
      * @dev Protocol contract instance
@@ -126,9 +126,9 @@ contract LendingPoolFactoryHyperlaneTest is Test {
     address public ArbEthUsd = 0xd30e2101a97dcbAeBCBC04F14C3f624E67A35165;
     
     /**
-     * @dev Arbitrum XTZ/USD price feed address
+     * @dev Arbitrum CORE/USD price feed address
      */
-    address public ArbXtzUsd = 0xe27498c9Cc8541033F265E63c8C29A97CfF9aC6D;
+    address public ArbCOREUsd = 0xe27498c9Cc8541033F265E63c8C29A97CfF9aC6D;
     
     /**
      * @dev Arbitrum USDC/USD price feed address
@@ -179,7 +179,7 @@ contract LendingPoolFactoryHyperlaneTest is Test {
         usdt = new MockUSDT(address(helperTestnet));
         wbtc = new MockWBTC(address(helperTestnet));
         weth = new MockWETH(address(helperTestnet));
-        wxtz = new MockWXTZ(address(helperTestnet));
+        wcORE = new MockWCORE(address(helperTestnet));
 
         lendingPoolFactory = new LendingPoolFactory(
             address(isHealthy), address(lendingPoolDeployer), address(protocol), address(helperTestnet)
@@ -189,7 +189,7 @@ contract LendingPoolFactoryHyperlaneTest is Test {
 
         lendingPoolFactory.addTokenDataStream(address(wbtc), ArbBtcUsd);
         lendingPoolFactory.addTokenDataStream(address(weth), ArbEthUsd);
-        lendingPoolFactory.addTokenDataStream(address(wxtz), ArbXtzUsd);
+        lendingPoolFactory.addTokenDataStream(address(wcORE), ArbCOREUsd);
         lendingPoolFactory.addTokenDataStream(address(usdc), ArbUsdcUsd);
         lendingPoolFactory.addTokenDataStream(address(usdt), ArbUsdtUsd);
 
