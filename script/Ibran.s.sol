@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import {Script, console} from "forge-std/Script.sol";
 import {MockUSDC} from "../src/mocks/MockUSDC.sol";
 import {MockUSDT} from "../src/mocks/MockUSDT.sol";
-import {MockWCORE} from "../src/mocks/MockWCORE.sol";
+// import {MockWCORE} from "../src/mocks/MockWCORE.sol";
 import {HelperTestnet} from "../src/HelperTestnet.sol";
 import {IbranBridgeTokenSender} from "../src/IbranBridgeTokenSender.sol";
 import {IbranBridgeTokenReceiver} from "../src/IbranBridgeTokenReceiver.sol";
@@ -17,7 +17,7 @@ import {LendingPoolDeployer} from "../src/LendingPoolDeployer.sol";
 import {LendingPoolFactory} from "../src/LendingPoolFactory.sol";
 import {LendingPool} from "../src/LendingPool.sol";
 import {Position} from "../src/Position.sol";
-import {Pricefeed} from "../src/Pricefeed.sol";
+// import {Pricefeed} from "../src/Pricefeed.sol";
 import {Oracle} from "../src/Oracle.sol";
 
 /*
@@ -41,7 +41,7 @@ contract IbranScript is Script {
     IbranBridgeTokenSender public ibranBridgeTokenSender;
     MockUSDC public mockUSDC;
     MockUSDT public mockUSDT;
-    MockWCORE public mockWCORE;
+    // // MockWCORE public mockWCORE;
     MockWBTC public mockWBTC;
     MockWETH public mockWETH;
 
@@ -51,32 +51,32 @@ contract IbranScript is Script {
     LendingPoolFactory public lendingPoolFactory;
     LendingPool public lendingPool;
     Position public position;
-    Pricefeed public pricefeed;
+    // Pricefeed public pricefeed;
     Oracle public oracle;
     // ****************************************************************************
     //************** DEPLOYED TOKEN ************** (ORIGIN CHAIN)
-    address public ORIGIN_helperTestnet = 0x1cC78286933D8E81aA8e5Cc39c9FCD87FDCA246f;
-    address public ORIGIN_mockUSDC = 0xcD108eEE9a62baEeA4a03e4CE5D2dD15b47b2857;
-    address public ORIGIN_mockUSDT = 0xBd788D49ffD8707dC713897614D96755FF72b313;
-    address public ORIGIN_mockWCORE = 0x14A9bEe4e32f4862e648a4cb208E57FF299662a5;
-    address public ORIGIN_mockWBTC = 0x3217D2b65Df07C7FD5BBa61144ad4B7ec623E311;
-    address public ORIGIN_mockWETH = 0x21077433B716F12e6aC2218184DC8fBbAd5E47fc;
+    address public ORIGIN_helperTestnet = 0x891Af21A126035E84d5344825CbC8Ef6fa3d0851;
+    address public ORIGIN_mockUSDC = 0x2439759843B84300813cB354D045bF8Ee700536d;
+    address public ORIGIN_mockUSDT = 0x666ca8639f5d28943c0B4769Df7d918AF538041E;
+    address public ORIGIN_mockWBTC = 0x356f0e9af99906FdAdFcF13125047353933188F5;
+    address public ORIGIN_mockWETH = 0x57F0b106BD8779B7Ff721126e01fD757D48d265E;
 
     //************** Price feed ************** (ORIGIN CHAIN)
     address public EthUsd = 0x6c75b16496384caE307f7E842e7133590E6D79Af;
     address public BtcUsd = 0x121296103189009d9D082943bE723387A6c7D30C;
-    address public CoreUsd = 0x1C17f47A297Ed0cCb0dD566eD79C65DA0EE69566;
+    address public UsdtUsd = 0x3ec8593F930EA45ea58c968260e6e9FF53FC934f;
+    address public UsdcUsd = 0xd30e2101a97dcbAeBCBC04F14C3f624E67A35165;
+    // address public CoreUsd = 0x1C17f47A297Ed0cCb0dD566eD79C65DA0EE69566;
     // ****************************************************************************
 
-    uint32 public ORIGIN_chainId = 1114;
+    uint32 public ORIGIN_chainId = 84532;
 
     //************** Receiver chain **************
     //************** Base Sepolia **************
-    // address public UsdcBridgeTokenReceiver = 0xB0986dE848059C50974c40D0B747241cf1F11471;
-    // address public UsdtBridgeTokenReceiver = 0x66195c626CD49d15066F07cf1015D895980A6E61;
-    // address public WCOREBridgeTokenReceiver = 0x44C310C4Fe971C6E4Ee50510D6190B80082E93CD;
-    // address public BtcBridgeTokenReceiver = 0xDfaa17BF52afc5a12d06964555fAAFDADD53FF5e;
-    // address public EthBridgeTokenReceiver = 0x3A1d7877C714AF1EF07Fb9261230458B7c2DBDD6;
+    // address public UsdcBridgeTokenReceiver =  0xD16dd67DD0B131626fF5d06A00F9D31C8196b5Fc ;
+    // address public UsdtBridgeTokenReceiver =  0x0aD1563Af384090361d91163490b55013D2D9929 ;
+    // address public BtcBridgeTokenReceiver =  0xe2E96b56A73Bc53521e1449573D47129f6a7382A ;
+    // address public EthBridgeTokenReceiver =  0xdDA7c8Fd4767a6b429Dbe4Eb1728D2b16ddB99Da ;
 
     // address public DESTINATION_helperTestnet = 0xbFc5D78E1B69F6f194C5822Ad55CFD1ae0fF796c;
     // address public DESTINATION_mockUSDC = 0xf5c7624c3054C5F093EfE22BdA58eFbe120a4B43;
@@ -86,18 +86,16 @@ contract IbranScript is Script {
     // address public DESTINATION_mockWETH = 0x8fe413C32a6A481f5926460E45d04D07d9Be2700;
     // ****************************************************************************
     //************** Arbitrum Sepolia **************
-    address public UsdcBridgeTokenReceiver = 0x51D7eDa76d5A53b3F128db10F983385c76Fa9E9b;
-    address public UsdtBridgeTokenReceiver = 0xa7847155e6f1cFd59A4aA0b913569AB29bC478Fa;
-    address public WCOREBridgeTokenReceiver = 0x6A2E72C739F98cF9fe68312DEAD2d91EfCE40c93;
-    address public BtcBridgeTokenReceiver = 0x46d90E6A52DB0C123ddD3025D12407c41E71880c;
-    address public EthBridgeTokenReceiver = 0xE9369E5D49D9036ce7C4641C9a45fB5000d28E73;
+    address public UsdcBridgeTokenReceiver = 0x8c9Ec6Bc7b82cD3475A5CbcC53811E3b41702F77;
+    address public UsdtBridgeTokenReceiver = 0x28a6b8F44C7dD36977DACEEB4651a31455978D81;
+    address public BtcBridgeTokenReceiver = 0xCB22Ef0448CB0a6286FCF0158b8CA3fDC0d5c818;
+    address public EthBridgeTokenReceiver = 0x056d833Aa56687FFfF98247813c7c02206E4E69F;
 
-    address public DESTINATION_helperTestnet = 0xadA2d9e44180AcBAbDbbBd1677DC7Bc62c605835;
-    address public DESTINATION_mockUSDC = 0xaF107c5a08384b41697a432beD83fd82a506CD23;
-    address public DESTINATION_mockUSDT = 0x155a48A343775fE0Ab5E84689c0734AFF1858264;
-    address public DESTINATION_mockWCORE = 0x36544Df0B323D13e2Aef01F408bB0Dcd110b7791;
-    address public DESTINATION_mockWBTC = 0xD91846b9fa52D39456Cc0321Fc68AFEE11D6883a;
-    address public DESTINATION_mockWETH = 0x22358BB0EF409B2D8C2531F0DB9D330A0c6b2683;
+    address public DESTINATION_helperTestnet = 0xc08979873dC84c018D451E9450F750887B4aD74f;
+    address public DESTINATION_mockUSDC = 0xc46C21ab15a6F1009168490219dBE10B68067E4B;
+    address public DESTINATION_mockUSDT = 0x58DC0146D7B3BF45692c9eD47C7ca39FAE0877bC;
+    address public DESTINATION_mockWBTC = 0x52435F547961766a75DDfc6Dae5b6E1a54ca04a0;
+    address public DESTINATION_mockWETH = 0x9163B0A3BD71073e860b16b78Bb976987f773E6E;
     // ****************************************************************************
 
     // ****************************************************************************
@@ -112,10 +110,10 @@ contract IbranScript is Script {
      */
     function setUp() public {
         // host chain (etherlink)
-        vm.createSelectFork(vm.rpcUrl("core_testnet"));
+        // vm.createSelectFork(vm.rpcUrl("core_testnet"));
         // receiver chain
         // vm.createSelectFork(vm.rpcUrl("arb_sepolia"));
-        // vm.createSelectFork(vm.rpcUrl("base_sepolia"));
+        vm.createSelectFork(vm.rpcUrl("base_sepolia"));
     }
 
     /**
@@ -134,9 +132,9 @@ contract IbranScript is Script {
             mockUSDT = new MockUSDT(address(helperTestnet));
             ibranBridgeTokenReceiver = new IbranBridgeTokenReceiver(address(helperTestnet), address(mockUSDT));
             console.log("address public UsdtBridgeTokenReceiver = ", address(ibranBridgeTokenReceiver), ";");
-            mockWCORE = new MockWCORE(address(helperTestnet));
-            ibranBridgeTokenReceiver = new IbranBridgeTokenReceiver(address(helperTestnet), address(mockWCORE));
-            console.log("address public WCOREBridgeTokenReceiver = ", address(ibranBridgeTokenReceiver), ";");
+            // // mockWCORE = new MockWCORE(address(helperTestnet));
+            // ibranBridgeTokenReceiver = new IbranBridgeTokenReceiver(address(helperTestnet), address(mockWCORE));
+            // console.log("address public WCOREBridgeTokenReceiver = ", address(ibranBridgeTokenReceiver), ";");
             mockWBTC = new MockWBTC(address(helperTestnet));
             ibranBridgeTokenReceiver = new IbranBridgeTokenReceiver(address(helperTestnet), address(mockWBTC));
             console.log("address public BtcBridgeTokenReceiver = ", address(ibranBridgeTokenReceiver), ";");
@@ -149,17 +147,17 @@ contract IbranScript is Script {
             console.log("address public DESTINATION_helperTestnet = ", address(helperTestnet), ";");
             console.log("address public DESTINATION_mockUSDC = ", address(mockUSDC), ";");
             console.log("address public DESTINATION_mockUSDT = ", address(mockUSDT), ";");
-            console.log("address public DESTINATION_mockWCORE = ", address(mockWCORE), ";");
+            // // console.log("address public DESTINATION_mockWCORE = ", address(mockWCORE), ";");
             console.log("address public DESTINATION_mockWBTC = ", address(mockWBTC), ";");
             console.log("address public DESTINATION_mockWETH = ", address(mockWETH), ";");
             // **************** JAVASCRIPT ****************
             console.log("************ COPY DESTINATION ADDRESS **************");
             console.log("export const DESTINATION_helperTestnet = ", address(helperTestnet), ";");
-            console.log("export const DESTINATION_mockWETH = ", address(mockWETH), ";");
             console.log("export const DESTINATION_mockUSDC = ", address(mockUSDC), ";");
             console.log("export const DESTINATION_mockUSDT = ", address(mockUSDT), ";");
-            console.log("export const DESTINATION_mockWCORE = ", address(mockWCORE), ";");
+            // // console.log("export const DESTINATION_mockWCORE = ", address(mockWCORE), ";");
             console.log("export const DESTINATION_mockWBTC = ", address(mockWBTC), ";");
+            console.log("export const DESTINATION_mockWETH = ", address(mockWETH), ";");
             // *************************************************
         } else if (block.chainid == ORIGIN_chainId && !isDeployed) {
             // **************** DEPLOY PROTOCOL ******************
@@ -184,13 +182,11 @@ contract IbranScript is Script {
             // *************************************************
 
             // **************** PRICE FEED ******************
-            pricefeed = new Pricefeed(address(mockUSDC));
-            pricefeed.setPrice(1e8);
-            lendingPoolFactory.addTokenDataStream(address(mockUSDC), address(pricefeed));
+            oracle = new Oracle(UsdcUsd);
+            lendingPoolFactory.addTokenDataStream(address(mockUSDC), address(oracle));
 
-            pricefeed = new Pricefeed(address(mockUSDT));
-            pricefeed.setPrice(1e8);
-            lendingPoolFactory.addTokenDataStream(address(mockUSDT), address(pricefeed));
+            oracle = new Oracle(UsdtUsd);
+            lendingPoolFactory.addTokenDataStream(address(mockUSDT), address(oracle));
 
             oracle = new Oracle(EthUsd);
             lendingPoolFactory.addTokenDataStream(address(mockWETH), address(oracle));
@@ -198,8 +194,8 @@ contract IbranScript is Script {
             oracle = new Oracle(BtcUsd);
             lendingPoolFactory.addTokenDataStream(address(mockWBTC), address(oracle));
 
-            oracle = new Oracle(CoreUsd);
-            lendingPoolFactory.addTokenDataStream(address(mockWCORE), address(oracle));
+            // oracle = new Oracle(CoreUsd);
+            // lendingPoolFactory.addTokenDataStream(address(mockWCORE), address(oracle));
             // *************************************************
 
             // **************** SOLIDITY ****************
@@ -207,17 +203,27 @@ contract IbranScript is Script {
             console.log("address public protocol = ", address(protocol), ";");
             console.log("address public isHealthy = ", address(isHealthy), ";");
             console.log("address public lendingPoolDeployer = ", address(lendingPoolDeployer), ";");
+            console.log("address public helperTestnet = ", address(helperTestnet), ";");
             console.log("address public lendingPoolFactory = ", address(lendingPoolFactory), ";");
             console.log("address public lendingPool = ", address(lendingPool), ";");
             console.log("address public position = ", address(position), ";");
+            console.log("address public oracleEthUsd = ", address(EthUsd), ";");
+            console.log("address public oracleBtcUsd = ", address(BtcUsd), ";");
+            console.log("address public oracleUsdcUsd = ", address(UsdcUsd), ";");
+            console.log("address public oracleUsdtUsd = ", address(UsdtUsd), ";");
             // **************** JAVASCRIPT ****************
             console.log("************ COPY ORIGIN ADDRESS **************");
             console.log("export const protocol = ", address(protocol), ";");
             console.log("export const isHealthy = ", address(isHealthy), ";");
             console.log("export const lendingPoolDeployer = ", address(lendingPoolDeployer), ";");
+            console.log("export const helperTestnet = ", address(helperTestnet), ";");
             console.log("export const lendingPoolFactory = ", address(lendingPoolFactory), ";");
             console.log("export const lendingPool = ", address(lendingPool), ";");
             console.log("export const position = ", address(position), ";");
+            console.log("export const oracleEthUsd = ", address(EthUsd), ";");
+            console.log("export const oracleBtcUsd = ", address(BtcUsd), ";");
+            console.log("export const oracleUsdcUsd = ", address(UsdcUsd), ";");
+            console.log("export const oracleUsdtUsd = ", address(UsdtUsd), ";");
         } else if (block.chainid == ORIGIN_chainId && isDeployed) {
             ///* 1.DEPLOY HYPERLANE TO DESTINATION CHAIN
             ///* 2.DEPLOY RECEIVER
@@ -226,7 +232,7 @@ contract IbranScript is Script {
             }
             pairBridgeToToken(ORIGIN_helperTestnet, ORIGIN_mockUSDC, UsdcBridgeTokenReceiver, DESTINATION_chainId);
             pairBridgeToToken(ORIGIN_helperTestnet, ORIGIN_mockUSDT, UsdtBridgeTokenReceiver, DESTINATION_chainId);
-            pairBridgeToToken(ORIGIN_helperTestnet, ORIGIN_mockWCORE, WCOREBridgeTokenReceiver, DESTINATION_chainId);
+            // // pairBridgeToToken(ORIGIN_helperTestnet, ORIGIN_mockWCORE, WCOREBridgeTokenReceiver, DESTINATION_chainId);
             pairBridgeToToken(ORIGIN_helperTestnet, ORIGIN_mockWBTC, BtcBridgeTokenReceiver, DESTINATION_chainId);
             pairBridgeToToken(ORIGIN_helperTestnet, ORIGIN_mockWETH, EthBridgeTokenReceiver, DESTINATION_chainId);
             ///* DONE
@@ -251,9 +257,9 @@ contract IbranScript is Script {
         mockUSDT = new MockUSDT(address(helperTestnet));
         pairBridgeToToken(address(helperTestnet), address(mockUSDT), UsdtBridgeTokenReceiver, DESTINATION_chainId);
 
-        if (WCOREBridgeTokenReceiver == address(0)) revert("WCOREBridgeTokenReceiver is not set");
-        mockWCORE = new MockWCORE(address(helperTestnet));
-        pairBridgeToToken(address(helperTestnet), address(mockWCORE), WCOREBridgeTokenReceiver, DESTINATION_chainId);
+        // // if (WCOREBridgeTokenReceiver == address(0)) revert("WCOREBridgeTokenReceiver is not set");
+        // // mockWCORE = new MockWCORE(address(helperTestnet));
+        // // pairBridgeToToken(address(helperTestnet), address(mockWCORE), WCOREBridgeTokenReceiver, DESTINATION_chainId);
 
         if (BtcBridgeTokenReceiver == address(0)) revert("BtcBridgeTokenReceiver is not set");
         mockWBTC = new MockWBTC(address(helperTestnet));
@@ -267,7 +273,7 @@ contract IbranScript is Script {
         console.log("address public ORIGIN_helperTestnet = ", address(helperTestnet), ";");
         console.log("address public ORIGIN_mockUSDC = ", address(mockUSDC), ";");
         console.log("address public ORIGIN_mockUSDT = ", address(mockUSDT), ";");
-        console.log("address public ORIGIN_mockWCORE = ", address(mockWCORE), ";");
+        // // console.log("address public ORIGIN_mockWCORE = ", address(mockWCORE), ";");
         console.log("address public ORIGIN_mockWBTC = ", address(mockWBTC), ";");
         console.log("address public ORIGIN_mockWETH = ", address(mockWETH), ";");
         // **************** JAVASCRIPT ****************
@@ -275,7 +281,7 @@ contract IbranScript is Script {
         console.log("export const ORIGIN_helperTestnet = ", address(helperTestnet), ";");
         console.log("export const ORIGIN_mockUSDC = ", address(mockUSDC), ";");
         console.log("export const ORIGIN_mockUSDT = ", address(mockUSDT), ";");
-        console.log("export const ORIGIN_mockWCORE = ", address(mockWCORE), ";");
+        // // console.log("export const ORIGIN_mockWCORE = ", address(mockWCORE), ";");
         console.log("export const ORIGIN_mockWBTC = ", address(mockWBTC), ";");
         console.log("export const ORIGIN_mockWETH = ", address(mockWETH), ";");
     }
@@ -305,6 +311,7 @@ contract IbranScript is Script {
 
     // RUN
     // forge script IbranScript --broadcast -vvv --verify
+    // forge script IbranScript --broadcast -vvv --verify --verifier etherscan --etherscan-api-key $ETHERSCAN_API_KEY
     // forge script IbranScript --verify --broadcast -vvv --with-gas-price 10000000000 --priority-gas-price 1000000000
     // forge verify-contract 0xb268f61c7dF38E14574fdC8b042f9Ad25ea0839A src/LendingPool.sol:LendingPool --verifier blockscout --verifier-url https://api.test2.btcs.network/api --etherscan-api-key 005d2ba2cee04671bb4fa9b2061959e5
 }

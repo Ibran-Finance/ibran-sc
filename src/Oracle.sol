@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {Ownable} from "@openzeppelin-contracts/contracts/access/Ownable.sol";
+import {IPriceFeed} from "./interfaces/IPriceFeed.sol";
 
 /*
 ██╗██████╗░██████╗░░█████╗░███╗░░██╗
@@ -11,10 +12,6 @@ import {Ownable} from "@openzeppelin-contracts/contracts/access/Ownable.sol";
 ██║██████╦╝██║░░██║██║░░██║██║░╚███║
 ╚═╝╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝
 */
-
-interface IApi3ReaderProxy {
-    function read() external view returns (int224 value, uint32 timestamp);
-}
 
 /**
  * @title Pricefeed
@@ -77,15 +74,16 @@ contract Oracle is Ownable {
 
     /**
      * @dev Returns the latest round data in Chainlink format
-     * @return roundId The round ID
+     * @return idRound The round ID
      * @return price The current price
-     * @return startedAt Timestamp when the round started
-     * @return updatedAt Timestamp when the price was last updated
-     * @return answeredInRound The round ID in which the answer was computed
+     * @return started Timestamp when the round started
+     * @return updated Timestamp when the price was last updated
+     * @return answeredRound The round ID in which the answer was computed
      * @notice This function mimics Chainlink's latestRoundData interface
      */
     function latestRoundData() public view returns (uint80, uint256, uint256, uint256, uint80) {
-        (int224 value, uint32 timestamp) = IApi3ReaderProxy(oracle).read();
-        return (roundId, uint256(uint224(value)), startedAt, uint256(timestamp), answeredInRound);
+        (uint80 idRound, int256 answer, uint256 started, uint256 updated, uint80 answeredRound) =
+            IPriceFeed(oracle).latestRoundData();
+        return (idRound, uint256(answer), started, updated, answeredRound);
     }
 }

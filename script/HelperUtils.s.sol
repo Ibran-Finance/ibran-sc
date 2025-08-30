@@ -6,10 +6,11 @@ import {HelperUtils} from "../src/HelperUtils.sol";
 
 contract HelperUtilsScript is Script {
     HelperUtils public helperUtils;
-    address public factory = 0x92b3f4D2312a108998a8E0fF91B90e6aB7AC97bE;
+    address public factory = 0x983CDD4696d5B36219F22dDc85E9BFc448363f0b;
 
     function setUp() public {
-        vm.createSelectFork(vm.rpcUrl("core_testnet"));
+        // vm.createSelectFork(vm.rpcUrl("core_testnet"));
+        vm.createSelectFork(vm.rpcUrl("base_sepolia"));
     }
 
     function run() public {
@@ -25,6 +26,7 @@ contract HelperUtilsScript is Script {
 
     // RUN
     // forge script HelperUtilsScript --verify --broadcast -vvv --with-gas-price 10000000000 --priority-gas-price 1000000000
+    // forge script HelperUtilsScript --broadcast -vvv --verify --verifier etherscan --etherscan-api-key $ETHERSCAN_API_KEY
 
 //     forge verify-contract \
 //   --rpc-url https://node.ghostnet.etherlink.com \

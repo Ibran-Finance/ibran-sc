@@ -234,7 +234,7 @@ contract Position is ReentrancyGuard {
 
         (, int256 tokenPrice,,,) = IPriceFeed(tokenDataStream).latestRoundData();
 
-        uint256 tokenAdjustedPrice = uint256(tokenPrice) * 1e18 / 1e18;
+        uint256 tokenAdjustedPrice = uint256(tokenPrice) * 1e18 / 1e8;
         uint256 value = (tokenBalance * tokenAdjustedPrice) / (10 ** tokenDecimals);
 
         return value;

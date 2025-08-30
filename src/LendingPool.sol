@@ -246,7 +246,7 @@ contract LendingPool is ReentrancyGuard {
 
             address bridgeTokenSenders = ITokenSwap(borrowToken).bridgeTokenSenders(_chainId, _bridgeTokenSender);
             uint256 gasAmount =
-                IInterchainGasPaymaster(interchainGasPaymaster).quoteGasPayment(destinationDomain, userAmount); // TODO: BURN
+                IInterchainGasPaymaster(interchainGasPaymaster).quoteGasPayment(destinationDomain, userAmount);
 
             IERC20(borrowToken).approve(bridgeTokenSenders, userAmount);
             IIbranBridgeTokenSender(bridgeTokenSenders).bridge{value: gasAmount}(userAmount, msg.sender, borrowToken);
