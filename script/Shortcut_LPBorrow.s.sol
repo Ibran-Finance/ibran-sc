@@ -29,8 +29,8 @@ contract LPBorrowScript is Script, Helper {
     // --------- FILL THIS ----------
     address public yourWallet = vm.envAddress("ADDRESS");
     uint256 public amount = 1;
-    // uint32 public chainId = 421614;
-    uint32 public chainId = 84532;
+    uint32 public chainId = 421614;
+    // uint32 public chainId = 84532;
     // uint256 public chainId = 128123;
     // ----------------------------
 
@@ -40,8 +40,9 @@ contract LPBorrowScript is Script, Helper {
      */
     function setUp() public {
         // ***************** HOST CHAIN *****************
-        vm.createSelectFork(vm.rpcUrl("etherlink_testnet"));
+        vm.createSelectFork(vm.rpcUrl("base_sepolia"));
         // **********************************************
+        // vm.createSelectFork(vm.rpcUrl("etherlink_testnet"));
         // vm.createSelectFork(vm.rpcUrl("rise_sepolia"));
         // vm.createSelectFork(vm.rpcUrl("op_sepolia"));
         // vm.createSelectFork(vm.rpcUrl("arb_sepolia"));
@@ -58,8 +59,8 @@ contract LPBorrowScript is Script, Helper {
      */
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
-        address borrowToken = ILendingPool(ORIGIN_lendingPool).borrowToken();
-        uint256 lpBorrowBalance = IERC20(borrowToken).balanceOf(ORIGIN_lendingPool);
+        address borrowToken = ILendingPool(BASE_lendingPool).borrowToken();
+        uint256 lpBorrowBalance = IERC20(borrowToken).balanceOf(BASE_lendingPool);
         uint256 decimal = IERC20Metadata(borrowToken).decimals();
         uint256 amountBorrow = amount * (10 ** decimal);
 
@@ -73,7 +74,7 @@ contract LPBorrowScript is Script, Helper {
             console.log("LP balance before borrow", lpBorrowBalance);
             console.log("borrow token address", borrowToken);
 
-            address helperTestnet = IFactory(ORIGIN_lendingPoolFactory).helper();
+            address helperTestnet = IFactory(BASE_lendingPoolFactory).helper();
             (,, uint32 destinationDomain) = IHelperTestnet(helperTestnet).chains(uint256(chainId));
             console.log("destinationDomain", destinationDomain);
             (, address interchainGasPaymaster,) = IHelperTestnet(helperTestnet).chains(uint256(block.chainid));
@@ -86,10 +87,10 @@ contract LPBorrowScript is Script, Helper {
                     IInterchainGasPaymaster(interchainGasPaymaster).quoteGasPayment(destinationDomain, amountBorrow);
                 console.log("gasAmount", gasAmount);
             }
-            ILendingPool(ORIGIN_lendingPool).borrowDebt{value: gasAmount}(amountBorrow, chainId, 0);
+            ILendingPool(BASE_lendingPool).borrowDebt{value: gasAmount}(amountBorrow, chainId, 0);
 
             console.log("success");
-            console.log("LP balance after borrow", IERC20(borrowToken).balanceOf(ORIGIN_lendingPool));
+            console.log("LP balance after borrow", IERC20(borrowToken).balanceOf(BASE_lendingPool));
         }
         vm.stopBroadcast();
     }

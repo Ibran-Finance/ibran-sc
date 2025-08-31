@@ -29,10 +29,10 @@ contract Helper is Script {
     address public BASE_ARB_MOCK_WBTC_SENDER = 0xbF5d87C06d9928F7C26F8e2c4389Bc7C9aC87Da4;
     address public BASE_ARB_MOCK_WETH_SENDER = 0xA610d431d569fd19F725161c7F1C2C0c52Ad06F9;
 
-    address public BASE_OP_MOCK_USDC_SENDER = 0x0EDc826Bf5aDBD3A54925C34dF268786Ba4481cC;
-    address public BASE_OP_MOCK_USDT_SENDER = 0x1959A5a8b287a2bbF32aC861A39cB6F6943121f9;
-    address public BASE_OP_MOCK_WBTC_SENDER = 0xb89Fee7901055088e013dEFED1d0D9e180DB909D;
-    address public BASE_OP_MOCK_WETH_SENDER = 0x19d50139E91C6E5c97679a18D4700eeEcE0CDBF5;
+    address public BASE_OP_MOCK_USDC_SENDER = 0xdaB78aCDEAbFdB3ac96ee95efA9336a190b9Dfe5;
+    address public BASE_OP_MOCK_USDT_SENDER = 0xAeb1279d0BCa98819bb25D76e54d49c221AB5656;
+    address public BASE_OP_MOCK_WBTC_SENDER = 0x326D971476D5ECa067Ca075075e0db66d011A072;
+    address public BASE_OP_MOCK_WETH_SENDER = 0x4DB881b3f4C5e2Fa6e5ad01af5aB3fd942534b9A;
 
     address public MOCK_USDC = 0xDa11C806176678e4228C904ec27014267e128fb5;
     address public MOCK_USDT = 0xA391a85B3B8D9cC90555E848aF803BF97067aA81;
@@ -49,10 +49,10 @@ contract Helper is Script {
     address public ARB_MOCK_WBTC = 0xdDc6E8700d1207Ea9347793Ba84914Ae34A37c6D;
     address public ARB_MOCK_WETH = 0x455Dd69cB8845354a240e68fc79508502024cf8D;
 
-    address public UsdcBridgeTokenReceiver = 0x4d14429334D78d808e9a1039f13F59713b772e12;
-    address public UsdtBridgeTokenReceiver = 0x948aaC248FEF678e34cC2d609dF4328B9DA6dC76;
-    address public BtcBridgeTokenReceiver = 0x468170e92311D432e69B03A52C613A3DBb371f1D;
-    address public EthBridgeTokenReceiver = 0xC9479F89fA8fcb9035A97e83B7Ae2A232f7560fc;
+    address public OP_UsdcBridgeTokenReceiver = 0x4d14429334D78d808e9a1039f13F59713b772e12;
+    address public OP_UsdtBridgeTokenReceiver = 0x948aaC248FEF678e34cC2d609dF4328B9DA6dC76;
+    address public OP_BtcBridgeTokenReceiver = 0x468170e92311D432e69B03A52C613A3DBb371f1D;
+    address public OP_EthBridgeTokenReceiver = 0xC9479F89fA8fcb9035A97e83B7Ae2A232f7560fc;
 
     address public OP_MOCK_USDC = 0xd60DC891520f85Eb55346A077390D32b747fd30c;
     address public OP_MOCK_USDT = 0x7f6486552841bE742FC396C8AB1fa9Cb20053983;
@@ -66,17 +66,19 @@ contract Helper is Script {
     address public BASE_lendingPool = 0x76091aC74058d69e32CdbCc487bF0bCA09cb59D7;
     address public BASE_position = 0x7C1A494ED22eAFC04e314c79Fc81AD11386f63a1;
 
-    address public EthUsd = 0x6c75b16496384caE307f7E842e7133590E6D79Af;
-    address public BtcUsd = 0x121296103189009d9D082943bE723387A6c7D30C;
+    address public EthUsd = 0x4aDC67696bA383F43DD60A9e78F2C97Fbbfc7cb1;
+    address public BtcUsd = 0x0FB99723Aee6f420beAD13e6bBB79b7E6F034298;
     address public UsdtUsd = 0x3ec8593F930EA45ea58c968260e6e9FF53FC934f;
     address public UsdcUsd = 0xd30e2101a97dcbAeBCBC04F14C3f624E67A35165;
 
-    address public oracleUsdcUsd = 0x2Fd0Ff2E15c1af2d947E15014ce3D570E09564de;
-    address public oracleUsdtUsd = 0x4E64400D95663F1900459C3c46f3667C363Ed33b;
-    address public oracleEthUsd = 0xd85Da6A6a270a77A2214060256d9AAcE4a458a9c;
-    address public oracleBtcUsd = 0x755A6453DbeE1B554e6c790335Bd69221c3626ee;
+    address public oracleUsdcUsd = 0x472D927f50bBbCf493fF70f00344e419c4344158;
+    address public oracleUsdtUsd = 0x3f7563696E8be45f0B20BC2D99D220B1925E8efd;
+    address public oracleEthUsd = 0xF0470C81960C1f40A8A56e654034aC5176356AA2;
+    address public oracleBtcUsd = 0xa6c5C0dFe1fBD9e7361B459Fa18C08249805be55;
 
     address public DEPLOYED_helperTestnet = 0x6b07A08C5c42576F5F32e7404eFEf3509D1A99C9;
+    address public BASE_helperUtils = 0x6234F07ad85805D01446BB7D8e1f8E5e2018cEB1;
+
 
     address public AVAX_USDC = 0xC014F158EbADce5a8e31f634c0eb062Ce8CDaeFe;
     address public AVAX_USDT = 0x1E713E704336094585c3e8228d5A8d82684e4Fb0;

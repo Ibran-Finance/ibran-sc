@@ -6,7 +6,7 @@ import {HelperUtils} from "../src/HelperUtils.sol";
 
 contract HelperUtilsScript is Script {
     HelperUtils public helperUtils;
-    address public factory = 0x983CDD4696d5B36219F22dDc85E9BFc448363f0b;
+    address public factory = 0x31c3850D2cBDC5B084D632d1c61d54161790bFF8;
 
     function setUp() public {
         // vm.createSelectFork(vm.rpcUrl("core_testnet"));

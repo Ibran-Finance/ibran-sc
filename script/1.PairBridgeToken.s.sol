@@ -8,7 +8,7 @@ import {ITokenSwap} from "../src/interfaces/ITokenSwap.sol";
 
 contract PairBridgeToken is Script, Helper {
     IbranBridgeTokenSender public ibranBridgeTokenSender;
-    uint256 destinationChainId = 421614;
+    uint256 destinationChainId = 11155420;
 
     // only source chain
     function setUp() public {

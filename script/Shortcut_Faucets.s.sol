@@ -23,8 +23,8 @@ import {ITokenSwap} from "../src/interfaces/ITokenSwap.sol";
  */
 contract FaucetsScript is Script, Helper {
     // ------- FILL THIS ----------
-    address public claimToken = ORIGIN_USDC;
-    uint256 public amount = 10_000;
+    address public claimToken = MOCK_WETH;
+    uint256 public amount = 10;
     // ----------------------------
 
     /**
@@ -33,11 +33,11 @@ contract FaucetsScript is Script, Helper {
      */
     function setUp() public {
         // ***************** HOST CHAIN *****************
-        vm.createSelectFork(vm.rpcUrl("etherlink_testnet"));
+        vm.createSelectFork(vm.rpcUrl("base_sepolia"));
         // **********************************************
 
+        // vm.createSelectFork(vm.rpcUrl("etherlink_testnet"));
         // vm.createSelectFork(vm.rpcUrl("rise_sepolia"));
-        // vm.createSelectFork(vm.rpcUrl("op_sepolia"));
         // vm.createSelectFork(vm.rpcUrl("arb_sepolia"));
         // vm.createSelectFork(vm.rpcUrl("avalanche_fuji"));
         // vm.createSelectFork(vm.rpcUrl("cachain_sepolia"));
